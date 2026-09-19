@@ -1,0 +1,105 @@
+﻿
+== Servicios (perfil obs)
+  [PASS] Servicio postgres sano
+         State=running Health=healthy
+  [PASS] Servicio redis sano
+         State=running Health=healthy
+  [PASS] Servicio bancs-mock sano
+         State=running Health=healthy
+  [PASS] Servicio core-api sano
+         State=running Health=healthy
+  [PASS] Servicio worker sano
+         State=running Health=healthy
+  [PASS] Servicio ai-service sano
+         State=running Health=healthy
+  [PASS] Servicio prometheus sano
+         State=running Health=healthy
+  [PASS] Servicio loki sano
+         State=running Health=healthy
+  [PASS] Servicio grafana sano
+         State=running Health=healthy
+  [PASS] Servicio alloy en ejecucion
+         State=running
+  [PASS] Servicio postgres-exporter en ejecucion
+         State=running
+  [PASS] Servicio tempo en ejecucion
+         State=running
+
+== Endpoints /metrics de cada servicio
+  [PASS] core-api /metrics: transferencias, pasos SQL, pool y HTTP
+  [PASS] worker /metrics: Bancs, breaker, outbox, lag y DLQ
+  [PASS] ai-service /metrics: recomendaciones, eventos y modo
+  [PASS] worker /health = 200 (healthcheck de Docker)
+
+== Prometheus: targets y alertas
+  [PASS] Los 5 targets estan UP (core-api, worker, ai-service, postgres, prometheus)
+         targets=5 caidos=
+  [PASS] Reglas de alerta cargadas y validas (>= 12)
+         reglas=12 con error=0
+  [PASS] Estan las alertas clave del incidente (latencia, errores, deadlocks, pool, Bancs, DLQ)
+         faltan: 
+
+== Las metricas suben con trafico real
+  [PASS] transfers_total{created} sube en 20 (visto por Prometheus)
+         antes=0 ahora=20
+  [PASS] El rechazo por fondos aparece con su codigo (INSUFFICIENT_FUNDS)
+  [PASS] Cada paso SQL de la transferencia tiene su histograma
+         sin datos: 
+  [PASS] El worker reporta los movimientos sincronizados con Bancs
+         sincronizados=1388
+  [PASS] DLQ = 0 y ambos grupos del stream (bancs-sync, ai-recs) tienen lag medido
+  [PASS] postgres_exporter aporta deadlocks, sesiones y bloqueos
+  [PASS] Metricas de IA: consulta del modelo registrada
+
+== Logs en Loki con trace_id (rastreo entre componentes)
+  [PASS] Con el trace_id de UNA transferencia se ven sus logs en core-api Y en el worker
+         trace_id=dc0617ee7f8367da61d6ff84b6856951 servicios=core-api,worker
+  [PASS] El worker registra el lote enviado a Bancs con los trace_id que contiene
+  [PASS] El log del ai-service lleva el mismo trace_id que envio core-api
+         trace_id=rec-281de850
+  [PASS] Los logs son JSON valido (una linea = un evento)
+  [PASS] Los logs de PostgreSQL tambien llegan a Loki
+
+== Trazas distribuidas en Tempo (OpenTelemetry)
+  [PASS] La traza de UNA transferencia existe en Tempo y cruza core-api y worker
+         trace_id=dc0617ee7f8367da61d6ff84b6856951 spans=23
+  [PASS] La traza muestra cada paso SQL como span propio
+         faltan: 
+  [PASS] La traza sigue por el outbox y la sincronizacion con Bancs (outbox.publish, bancs.sync)
+  [PASS] El trace_id de los logs es el mismo de la traza (logs <-> trazas)
+
+== Grafana: datasources y dashboards provisionados
+  [PASS] Datasource prometheus conectado
+         Successfully queried the Prometheus API.
+  [PASS] Datasource loki conectado
+         Data source successfully connected.
+  [PASS] Datasource tempo conectado (Grafana llega a Tempo por su proxy)
+         HTTP 200
+  [PASS] Dashboards Operacion e Incidente provisionados por archivos
+  [PASS] Las 53 consultas de todos los paneles se ejecutan sin error
+
+== Diagnostico del incidente 3.5: deadlock real con LOCK_ORDERING=off
+  [PASS] core-api reiniciado con LOCK_ORDERING=off (solo para la demo)
+  [PASS] Transferencias cruzadas A<->B a la vez provocan deadlocks (HTTP 409)
+         409=6 de 12 respuestas; el resto termino bien (201=6)
+  [PASS] Prometheus ve los deadlocks (db_errors_total{type=deadlock})
+         antes=0 ahora=6
+  [PASS] La metrica senala EL PASO SQL exacto donde ocurre el deadlock (lock_to: el segundo bloqueo)
+         paso(s) con deadlock: lock_to
+  [PASS] El log del error trae paso, SQLSTATE 40P01, detalle de los procesos bloqueados y trace_id
+         lock_to 40P01 deadlock
+  [PASS] En Tempo hay una traza con el span db.lock_to marcado como ERROR (el paso que hizo deadlock)
+  [PASS] El log de PostgreSQL registra "deadlock detected" (visible en Loki)
+  [PASS] La alerta DeadlocksDetected se dispara en Prometheus
+  [PASS] Restaurado LOCK_ORDERING=on: las mismas transferencias cruzadas ya no dan deadlock
+         codigos=201,201,201,201,201,201
+
+== Pruebas automaticas
+  [PASS] 25 tests de core-api pasan (transferencias, IA, metricas, diagnostico y privacidad)
+               Tests  25 passed (25)
+  [PASS] 10 tests del worker pasan (7 previos + 3 de metricas)
+               Tests  10 passed (10)
+  [PASS] 23 tests del ai-service pasan
+         23 passed, 3 warnings in 1.38s
+
+PASO 4 : 52/52 chequeos OK, 0 fallos

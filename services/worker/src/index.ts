@@ -1,9 +1,11 @@
+import { shutdownTracing } from './tracing'; // primero: inicia el SDK de trazas si hay endpoint OTLP
 import { Pool } from 'pg';
 import Redis from 'ioredis';
 import { BancsClient } from './bancs-client';
 import { CircuitBreaker } from './circuit-breaker';
 import { loadConfig } from './config';
 import { log } from './log';
+import { registerGauges, startMetricsServer } from './metrics';
 import { RateLimiter } from './rate-limiter';
 import { createRelay } from './relay';
 import { createSyncConsumer } from './sync-consumer';
@@ -25,6 +27,10 @@ const consumer = createSyncConsumer({
   cfg,
 });
 
+registerGauges({ pool, redis: redisPublisher, cfg, breakerState: () => consumer.stats().breaker });
+// /health: el worker se considera sano mientras su conexión a Redis esté lista (lo usa el healthcheck de Docker).
+const metricsServer = startMetricsServer(Number(process.env.METRICS_PORT ?? 9464), () => redisPublisher.status === 'ready');
+
 relay.start();
 consumer.start();
 log('info', 'worker iniciado', {
@@ -41,6 +47,8 @@ async function shutdown(signal: string) {
   log('info', 'apagando worker', { signal });
   await relay.stop();
   await consumer.stop();
+  metricsServer.close();
+  await shutdownTracing();
   await pool.end();
   redisPublisher.disconnect();
   redisConsumer.disconnect();

@@ -15,6 +15,8 @@ export const config = {
   dbConnectTimeoutMs: int(process.env.DB_CONNECT_TIMEOUT_MS, 2000),
   // Si un bloqueo tarda más que esto, falla rápido en vez de acumular esperas.
   dbLockTimeoutMs: int(process.env.DB_LOCK_TIMEOUT_MS, 1500),
+  // Un paso SQL que tarde más de esto se registra como lento (con su nombre y trace_id).
+  slowOpMs: int(process.env.SLOW_OP_MS, 200),
   dbStatementTimeoutMs: int(process.env.DB_STATEMENT_TIMEOUT_MS, 3000),
 
   // "on"  -> bloquea las cuentas siempre en orden de id (sin deadlocks).

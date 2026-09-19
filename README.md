@@ -112,6 +112,17 @@ Invoke-RestMethod -Method Post http://localhost:8000/admin/mode -Body '{"mode":"
 Verificación completa (incluye latencias medidas de las transferencias): `powershell -ExecutionPolicy Bypass -File scriptserificar-paso3.ps1`.
 Decisiones: [ADR-0004](docs/adr/0004-ia-asincrona-con-fallback.md).
 
+## Observabilidad (métricas, logs y trazas)
+Prometheus, Loki, Tempo y Grafana, con dashboards y alertas ya provisionados. Se activa con un perfil para no cargar el arranque básico:
+```powershell
+docker compose --profile obs up -d --build
+```
+- **Grafana:** http://localhost:3001 → carpeta **SmartBancs** → *Operación* e *Incidente (latencia, timeouts y deadlocks)*. Se puede ver sin iniciar sesión (admin/admin para editar).
+- **Prometheus:** http://localhost:9090 (y `/alerts`). **`/metrics`:** core-api `:3000`, worker `:9464`, ai-service `:8000`.
+- Cada respuesta de `POST /v1/transfers` trae `x-request-id` = `trace_id`: con él se ven los logs (Loki) y la traza completa (Tempo): API → pasos SQL → outbox → Bancs.
+- Verificación: `powershell -ExecutionPolicy Bypass -File scriptserificar-paso4.ps1` (incluye provocar un deadlock real y ver que queda identificado el paso SQL).
+- Guía completa, diseño y límites: [`docs/observabilidad.md`](docs/observabilidad.md) · [ADR-0005](docs/adr/0005-observabilidad.md).
+
 ## Pruebas automáticas
 ```bash
 docker compose up -d postgres redis
@@ -148,9 +159,11 @@ docker compose down -v     # borra también los datos (vuelve a cargar el esquem
 | GET | `/health` | Estado del servicio y la base de datos |
 | GET | `:4000/bancs/stats` | (Bancs simulado) estadísticas de las llamadas recibidas |
 | POST | `:4000/bancs/admin/outage` | (Bancs simulado) apagar/encender el legado para la demo |
+| GET | `/metrics` (core-api `:3000`, worker `:9464`, ai-service `:8000`) | Métricas Prometheus |
 | GET | `:8000/health` · `:8000/model` | (ai-service) estado, consumo del stream e información del modelo |
 | POST | `:8000/admin/mode` | (ai-service) `normal`, `slow` o `down` para demostrar la degradación |
 
 ## Documentación
 - Decisiones de arquitectura: [`docs/adr/`](docs/adr)
+- Observabilidad (diseño, uso e incidente): [`docs/observabilidad.md`](docs/observabilidad.md)
 - Declaración de uso de IA: [`AI_USAGE.md`](AI_USAGE.md)

@@ -31,3 +31,8 @@ export function generateAccountNumber(): string {
 export function maskAccountNumber(value: string): string {
   return '******' + value.slice(-4);
 }
+
+/** Enmascara el número de cuenta en una URL antes de escribirla en los logs: /accounts/1000000016 -> /accounts/******0016 */
+export function maskAccountsInUrl(url: string): string {
+  return url.replace(/\/accounts\/\d{6}(\d{4})/g, '/accounts/******$1');
+}

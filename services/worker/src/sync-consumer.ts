@@ -5,6 +5,8 @@ import { CircuitBreaker, CircuitOpenError } from './circuit-breaker';
 import { WorkerConfig } from './config';
 import { log, sleep } from './log';
 import { RateLimiter } from './rate-limiter';
+import { recordEventSpans } from './tracing';
+import { bancsBatchSize, bancsCallDuration, bancsCalls, deadLetteredTotal, retriesTotal, syncedTotal } from './metrics';
 
 interface SyncEvent {
   streamId: string;
@@ -13,6 +15,8 @@ interface SyncEvent {
   toAccount: string;
   amount: string;
   currency: string;
+  traceId: string;
+  traceparent: string;
 }
 
 type StreamEntry = [string, string[]];
@@ -27,6 +31,8 @@ function parseEntry([streamId, fields]: StreamEntry): SyncEvent {
     toAccount: f.toAccount,
     amount: f.amount,
     currency: f.currency,
+    traceId: f.traceId ?? '',
+    traceparent: f.traceparent ?? '',
   };
 }
 
@@ -98,6 +104,7 @@ export function createSyncConsumer(deps: {
     }
     await redis.xack(cfg.stream, cfg.group, ...events.map((e) => e.streamId));
     stats.deadLettered += events.length;
+    deadLetteredTotal.inc(events.length);
     log('error', 'eventos enviados a la DLQ', { count: events.length, reason, attempts });
   }
 
@@ -114,6 +121,7 @@ export function createSyncConsumer(deps: {
     await markSynced(ok, attempts);
     if (ok.length) await redis.xack(cfg.stream, cfg.group, ...ok.map((e) => e.streamId));
     stats.synced += ok.length;
+    syncedTotal.inc(ok.length);
     for (const r of rejected) await deadLetter([r.event], r.reason, attempts);
   }
 
@@ -132,17 +140,42 @@ export function createSyncConsumer(deps: {
     while (running) {
       try {
         await limiter.acquire();
+        const callStart = process.hrtime.bigint();
         const results = await breaker.exec(
-          () => bancs.postBatch(postings),
+          async () => {
+            try {
+              const r = await bancs.postBatch(postings);
+              bancsCalls.inc({ outcome: 'ok' });
+              return r;
+            } catch (e) {
+              bancsCalls.inc({ outcome: e instanceof PermanentError ? 'permanent' : 'retryable' });
+              throw e;
+            } finally {
+              bancsCallDuration.observe(Number(process.hrtime.bigint() - callStart) / 1e9);
+              bancsBatchSize.observe(postings.length);
+            }
+          },
           (err) => err instanceof RetryableError && err.countsForBreaker,
         );
         stats.batchesSent++;
         await handleResults(events, results, attempt + 1);
+        recordEventSpans(events, 'bancs.sync', startedAt, Date.now(), {
+          'bancs.batch_size': events.length,
+          'bancs.attempts': attempt + 1,
+        });
+        // trace_id de cada transferencia: permite seguir una transferencia desde la API hasta Bancs en los logs.
+        log('info', 'lote sincronizado con Bancs', {
+          count: events.length,
+          attempts: attempt + 1,
+          ms: Math.round(Number(process.hrtime.bigint() - callStart) / 1e6),
+          trace_ids: events.map((e) => e.traceId).filter(Boolean),
+        });
         return;
       } catch (err) {
         if (err instanceof CircuitOpenError) {
           // Circuito abierto: no se llama al legado. Esperar NO consume intentos.
           stats.circuitWaits++;
+          bancsCalls.inc({ outcome: 'circuit_open' });
           if (tooOld()) {
             await deadLetter(events, `sin entrega tras ${cfg.maxRetryMs} ms (circuito abierto)`, attempt);
             return;
@@ -157,6 +190,7 @@ export function createSyncConsumer(deps: {
         }
         attempt++;
         stats.retries++;
+        retriesTotal.inc();
         const message = (err as Error).message;
         if (tooOld()) {
           await deadLetter(events, `sin entrega tras ${cfg.maxRetryMs} ms: ${message}`, attempt);

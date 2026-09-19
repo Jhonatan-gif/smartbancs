@@ -28,7 +28,7 @@ function Invoke-Api {
     param([string]$Method, [string]$Url, $Body = $null, [hashtable]$Headers = @{}, [int]$TimeoutSec = 30)
     $params = @{ Method = $Method; Uri = $Url; UseBasicParsing = $true; TimeoutSec = $TimeoutSec; Headers = $Headers }
     if ($null -ne $Body) {
-        $params.Body = ($Body | ConvertTo-Json -Compress)
+        $params.Body = ($Body | ConvertTo-Json -Compress -Depth 10)
         $params.ContentType = 'application/json'
     }
     $status = 0; $text = ''; $hdrs = @{}

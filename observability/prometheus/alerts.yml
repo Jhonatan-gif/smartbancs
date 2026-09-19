@@ -1,0 +1,87 @@
+# Reglas de alerta. Cada una responde a un síntoma del incidente de la sección 3.5 o a una degradación de un componente.
+# En este MVP las alertas se ven en Prometheus (/alerts) y en Grafana; en producción se enviarían con Alertmanager
+# (PagerDuty/Slack/correo) y se enlazarían al runbook.
+groups:
+  - name: transferencias
+    rules:
+      - alert: TransferLatencyP95High
+        expr: histogram_quantile(0.95, sum by (le) (rate(transfer_duration_seconds_bucket[2m]))) > 2
+        for: 1m
+        labels: { severity: critical }
+        annotations:
+          summary: "p95 de transferencias > 2 s (requisito del reto)"
+          hint: "Revisar db_op_duration_seconds por paso (lock_accounts) y db_pool_connections{state=waiting}."
+      - alert: TransferErrorRateHigh
+        expr: sum(rate(transfers_total{outcome="error"}[2m])) / clamp_min(sum(rate(transfers_total[2m])), 1e-9) > 0.01
+        for: 1m
+        labels: { severity: critical }
+        annotations:
+          summary: "Más del 1 % de las transferencias terminan en error de infraestructura (5xx/409)"
+          hint: "Ver transfers_total por code y los logs de core-api con nivel error."
+      - alert: DeadlocksDetected
+        expr: increase(db_errors_total{type="deadlock"}[2m]) > 0
+        labels: { severity: critical }
+        annotations:
+          summary: "Deadlocks en PostgreSQL"
+          hint: "db_op_errors_total{pg_code=40P01} indica el paso; el log 'error SQL en el paso' trae el detalle (procesos y relación)."
+      - alert: LockTimeouts
+        expr: increase(db_errors_total{type="lock_timeout"}[2m]) > 0
+        labels: { severity: warning }
+        annotations:
+          summary: "Transferencias fallando por lock_timeout (bloqueos largos)"
+  - name: base-de-datos
+    rules:
+      - alert: DbPoolSaturated
+        expr: max_over_time(db_pool_connections{state="waiting"}[1m]) > 0
+        for: 1m
+        labels: { severity: warning }
+        annotations:
+          summary: "Peticiones esperando una conexión del pool (saturación)"
+          hint: "Hay conexiones ocupadas por bloqueos o consultas lentas; ver pg_stat_activity_count y pg_locks_count."
+      - alert: DbPoolExhausted
+        expr: db_pool_connections{state="idle"} == 0 and on() db_pool_connections{state="total"} >= on() db_pool_max_connections
+        for: 30s
+        labels: { severity: critical }
+        annotations:
+          summary: "Pool de conexiones agotado: 0 libres"
+      - alert: LongRunningTransaction
+        expr: max(pg_stat_activity_max_tx_duration{state=~"active|idle in transaction"}) > 5
+        for: 1m
+        labels: { severity: warning }
+        annotations:
+          summary: "Transacción abierta más de 5 s (posible bloqueo que retiene conexiones)"
+  - name: integraciones
+    rules:
+      - alert: BancsCircuitOpen
+        expr: bancs_breaker_state == 2
+        for: 30s
+        labels: { severity: warning }
+        annotations:
+          summary: "Circuit breaker hacia Bancs abierto: el legado no responde"
+          hint: "Las transferencias siguen funcionando; la sincronización se acumula y se recupera sola."
+      - alert: BancsSyncLagging
+        expr: sync_unsynced_transactions > 500 or outbox_oldest_unpublished_age_seconds > 60
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          summary: "La sincronización con Bancs se está quedando atrás"
+      - alert: DeadLetterQueueNotEmpty
+        expr: dlq_length > 0
+        labels: { severity: critical }
+        annotations:
+          summary: "Hay movimientos en la DLQ: requieren revisión manual"
+      - alert: AiServiceDegraded
+        expr: sum(rate(ai_calls_total{outcome!="ok"}[2m])) / clamp_min(sum(rate(ai_calls_total[2m])), 1e-9) > 0.5
+        for: 2m
+        labels: { severity: info }
+        annotations:
+          summary: "Más de la mitad de las recomendaciones salen del fallback (ai-service degradado)"
+          hint: "No afecta a las transferencias."
+  - name: disponibilidad
+    rules:
+      - alert: TargetDown
+        expr: up == 0
+        for: 1m
+        labels: { severity: critical }
+        annotations:
+          summary: "{{ $labels.job }} no responde a Prometheus"

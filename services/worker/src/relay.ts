@@ -2,6 +2,8 @@ import { Pool } from 'pg';
 import Redis from 'ioredis';
 import { WorkerConfig } from './config';
 import { log, sleep } from './log';
+import { relayPublishedTotal } from './metrics';
+import { recordEventSpans } from './tracing';
 
 /**
  * RELAY DEL OUTBOX (patrón Transactional Outbox)
@@ -18,6 +20,7 @@ export function createRelay(deps: { pool: Pool; redis: Redis; cfg: WorkerConfig 
   let loop: Promise<void> = Promise.resolve();
 
   async function relayOnce(): Promise<number> {
+    const startedMs = Date.now();
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
@@ -50,6 +53,7 @@ export function createRelay(deps: { pool: Pool; redis: Redis; cfg: WorkerConfig 
           'currency', r.payload.currency,
           'occurredAt', r.payload.occurredAt,
           'traceId', r.trace_id ?? '',
+          'traceparent', r.payload.traceparent ?? '',
         );
       }
       const results = await pipeline.exec();
@@ -59,7 +63,19 @@ export function createRelay(deps: { pool: Pool; redis: Redis; cfg: WorkerConfig 
         rows.map((r) => r.id),
       ]);
       await client.query('COMMIT');
-      log('info', 'eventos publicados', { count: rows.length, stream: cfg.stream });
+      relayPublishedTotal.inc(rows.length);
+      recordEventSpans(
+        rows.map((r) => ({ traceparent: r.payload.traceparent ?? '' })),
+        'outbox.publish',
+        startedMs,
+        Date.now(),
+        { 'messaging.system': 'redis-streams', 'messaging.destination.name': cfg.stream, 'batch.size': rows.length },
+      );
+      log('info', 'eventos publicados', {
+        count: rows.length,
+        stream: cfg.stream,
+        trace_ids: rows.map((r) => r.trace_id).filter(Boolean),
+      });
       return rows.length;
     } catch (err) {
       try {

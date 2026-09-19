@@ -1,0 +1,44 @@
+// Grafana Alloy: lee los logs de los contenedores del compose y los envía a Loki.
+// Etiquetas de baja cardinalidad: service (nombre del servicio del compose) y level. El trace_id NO es etiqueta:
+// se busca dentro de la línea JSON (|= "<trace_id>"), así no se dispara la cardinalidad.
+discovery.docker "containers" {
+  host = "unix:///var/run/docker.sock"
+}
+
+discovery.relabel "containers" {
+  targets = discovery.docker.containers.targets
+
+  // Solo contenedores de este proyecto de compose
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
+    regex         = "smartbancs"
+    action        = "keep"
+  }
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+    target_label  = "service"
+  }
+}
+
+loki.source.docker "containers" {
+  host       = "unix:///var/run/docker.sock"
+  targets    = discovery.relabel.containers.output
+  forward_to = [loki.process.logs.receiver]
+}
+
+loki.process "logs" {
+  // Las líneas JSON (core-api, worker, ai-service) aportan `level`; las de postgres/redis no son JSON y pasan igual.
+  stage.json {
+    expressions = { level = "level" }
+  }
+  stage.labels {
+    values = { level = "" }
+  }
+  forward_to = [loki.write.default.receiver]
+}
+
+loki.write "default" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}

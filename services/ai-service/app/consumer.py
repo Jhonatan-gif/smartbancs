@@ -19,11 +19,13 @@ def parse_entry(fields: dict) -> dict:
 
 
 class StreamConsumer:
-    def __init__(self, redis: Redis, live: LiveState, stream: str, group: str, name: str, block_ms: int = 1000):
+    def __init__(self, redis: Redis, live: LiveState, stream: str, group: str, name: str, block_ms: int = 1000,
+                 on_error=None):
         self.redis, self.live = redis, live
         self.stream, self.group, self.name, self.block_ms = stream, group, name, block_ms
         self._task: asyncio.Task | None = None
         self.errors = 0
+        self._on_error = on_error  # gancho para contar errores en las métricas
 
     async def ensure_group(self) -> None:
         try:
@@ -62,6 +64,8 @@ class StreamConsumer:
                 raise
             except (RedisError, OSError) as err:
                 self.errors += 1
+                if self._on_error:
+                    self._on_error()
                 log.warning("redis no disponible (%s); reintento en %.0fs", err, backoff)
                 await asyncio.sleep(backoff)
                 backoff = min(backoff * 2, 15.0)

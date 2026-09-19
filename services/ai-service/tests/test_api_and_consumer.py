@@ -116,3 +116,36 @@ def test_consumidor_sobrevive_a_redis_caido():
 
     alive, errors = asyncio.run(scenario())
     assert alive and errors >= 1
+
+
+# --- Observabilidad ---
+def test_metrics_expone_recomendaciones_y_modo(client):
+    client.get("/recommendations/1000000016")
+    client.post("/admin/mode", json={"mode": "slow", "delay_ms": 0})
+    body = client.get("/metrics").text
+    client.post("/admin/mode", json={"mode": "normal"})
+    assert 'ai_recommendations_total{cold_start="false"}' in body
+    assert "ai_recommendation_duration_seconds_bucket" in body
+    assert "ai_admin_mode 1.0" in body
+    assert "ai_model_accounts" in body
+
+
+def test_logs_son_json_validos_con_trace_id(client, capsys):
+    import io
+    import json
+    import logging
+
+    stream = io.StringIO()
+    handler = logging.getLogger().handlers[0]
+    old, old_level = handler.stream, logging.getLogger().level
+    handler.setStream(stream)
+    logging.getLogger().setLevel(logging.INFO)
+    try:
+        client.get("/recommendations/1000000016", headers={"x-request-id": "trace-123"})
+    finally:
+        handler.setStream(old)
+        logging.getLogger().setLevel(old_level)
+    lines = [json.loads(line) for line in stream.getvalue().splitlines() if line.strip()]  # cada línea es JSON válido
+    entry = next(e for e in lines if e["msg"] == "recomendaciones generadas")
+    assert entry["service"] == "ai-service" and entry["trace_id"] == "trace-123"
+    assert entry["account"] == "****0016"  # nunca el número de cuenta completo en los logs

@@ -113,7 +113,7 @@ finally {
 
 if (-not $SinTests) {
     Titulo 'Tests del worker (vitest)'
-    $t = Invoke-VitestSuite 'worker'
+    $t = Invoke-VitestSuite 'worker' @('test/pipeline.integration.test.ts', 'test/resilience.unit.test.ts')
     $ok = ($t.ExitCode -eq 0) -and ($t.Output -match 'Tests\s+7 passed') -and ($t.Output -notmatch '\d+ failed')
     $resumen = ($t.Output -split "`n" | Where-Object { $_ -match '^\s*(Tests|Test Files)\s' }) -join ' | '
     Check '7 tests del worker pasan' $ok $resumen

@@ -3,6 +3,9 @@ import { pool } from '../../infra/db';
 import { AppError } from '../../shared/errors';
 import { AiClient, AiUnavailableError } from './ai-client';
 import { FALLBACK_RECOMMENDATIONS } from './fallback';
+import { aiBreakerState, aiCallDuration, aiCalls } from '../../observability/metrics';
+
+const BREAKER_VALUE = { CLOSED: 0, HALF_OPEN: 1, OPEN: 2 } as const;
 
 /**
  * GET /v1/accounts/{n}/recommendations
@@ -32,11 +35,17 @@ export async function recommendationRoutes(app: FastifyInstance, opts: { aiClien
       const elapsedMs = () => Number(process.hrtime.bigint() - started) / 1e6;
       try {
         const ai = await opts.aiClient.recommendations(accountNumber, request.id);
+        aiCalls.inc({ outcome: 'ok' });
+        aiCallDuration.observe({ source: 'model' }, elapsedMs() / 1000);
+        aiBreakerState.set(BREAKER_VALUE[opts.aiClient.breakerState]);
         request.log.info({ ai: 'ok', ms: elapsedMs(), breaker: opts.aiClient.breakerState }, 'llamada al ai-service');
         reply.header('x-recommendations-source', 'model');
         return { ...ai, degraded: false };
       } catch (err) {
         const reason = err instanceof AiUnavailableError ? err.reason : 'unavailable';
+        aiCalls.inc({ outcome: reason });
+        aiCallDuration.observe({ source: 'fallback' }, elapsedMs() / 1000);
+        aiBreakerState.set(BREAKER_VALUE[opts.aiClient.breakerState]);
         request.log.warn(
           { ai: 'fallback', reason, ms: elapsedMs(), breaker: opts.aiClient.breakerState },
           'ai-service no disponible: se responde el fallback',

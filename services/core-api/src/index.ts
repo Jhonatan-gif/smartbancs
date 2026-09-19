@@ -1,3 +1,4 @@
+import { shutdownTracing } from './observability/tracing'; // DEBE ir primero: instrumenta http/pg/fastify
 import { config } from './config';
 import { pool } from './infra/db';
 import { buildApp } from './server';
@@ -8,6 +9,7 @@ async function shutdown(signal: string) {
   app.log.info({ signal }, 'apagando servicio');
   await app.close();
   await pool.end();
+  await shutdownTracing();
   process.exit(0);
 }
 process.on('SIGTERM', () => void shutdown('SIGTERM'));

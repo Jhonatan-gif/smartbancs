@@ -133,12 +133,12 @@ finally {
 if (-not $SinTests) {
     Titulo 'Pruebas automaticas'
     $t = Invoke-VitestSuite 'core-api'
-    $ok = ($t.ExitCode -eq 0) -and ($t.Output -match 'Tests\s+16 passed') -and ($t.Output -notmatch '\d+ failed')
-    Check '16 tests de core-api pasan (8 previos + 8 de recomendaciones)' $ok (($t.Output -split "`n" | Where-Object { $_ -match '^\s*Tests\s' }) -join ' ')
+    $ok = ($t.ExitCode -eq 0) -and ($t.Output -match 'Tests\s+25 passed') -and ($t.Output -notmatch '\d+ failed')
+    Check '25 tests de core-api pasan (transferencias, IA, metricas, privacidad)' $ok (($t.Output -split "`n" | Where-Object { $_ -match '^\s*Tests\s' }) -join ' ')
     if (-not $ok) { Write-Host $t.Output }
 
     $py = Invoke-Native -Exe 'docker' -Arguments @('compose', 'exec', '-T', 'ai-service', 'python', '-m', 'pytest', '-q')
-    Check '21 tests del ai-service pasan (motor, API, consumidor con Redis real)' ($py.ExitCode -eq 0 -and $py.Output -match '21 passed') (($py.Output -split "`n" | Select-Object -Last 1))
+    Check '23 tests del ai-service pasan (motor, API, consumidor con Redis real, metricas)' ($py.ExitCode -eq 0 -and $py.Output -match '23 passed') (($py.Output -split "`n" | Select-Object -Last 1))
     if ($py.ExitCode -ne 0) { Write-Host $py.Output }
 
     $etl = Invoke-Native -Exe 'docker' -Arguments @('compose', 'run', '--rm', 'etl', 'python', '-m', 'pytest', '-q')
