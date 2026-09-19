@@ -45,6 +45,9 @@ services:
       SIMULATED_LOCK_DELAY_MS: ${SIMULATED_LOCK_DELAY_MS:-0}
       DB_POOL_MAX: ${DB_POOL_MAX:-20}
       LOG_LEVEL: ${LOG_LEVEL:-info}
+      # El ai-service es OPCIONAL para core-api: no hay depends_on. Si cae, /recommendations responde el fallback.
+      AI_SERVICE_URL: http://ai-service:8000
+      AI_TIMEOUT_MS: ${AI_TIMEOUT_MS:-300}
     ports:
       - "3000:3000"
     healthcheck:
@@ -107,6 +110,27 @@ services:
       BREAKER_THRESHOLD: ${BREAKER_THRESHOLD:-5}
       BREAKER_COOLDOWN_MS: ${BREAKER_COOLDOWN_MS:-5000}
       LOG_LEVEL: ${LOG_LEVEL:-info}
+
+  # Recomendaciones de IA (FastAPI). Consume el stream con su propio grupo (`ai-recs`) y NO participa en las
+  # transferencias: si cae o se vuelve lento, core-api responde recomendaciones de respaldo (fallback).
+  ai-service:
+    build: ./services/ai-service
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      REDIS_URL: redis://redis:6379
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    volumes:
+      - ./etl/data:/data:ro   # features del ETL (processed/ si existe; si no, la muestra versionada)
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2).status == 200 else 1)"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   # ETL de transacciones (Python). No arranca con `docker compose up`: se ejecuta bajo demanda con
   #   docker compose run --rm etl              (limpia el CSV de muestra -> etl/data/processed)

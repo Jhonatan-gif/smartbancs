@@ -96,6 +96,22 @@ Resultado sobre la muestra versionada: [`docs/evidencias/etl-reporte-calidad.md`
 Sin Docker: `cd etl; python -m venv .venv; .venv\Scripts\pip install -r requirements.txt; .venv\Scripts\python -m smartbancs_etl.pipeline`.
 Decisiones: [ADR-0003](docs/adr/0003-etl-limpieza-y-features.md).
 
+## Recomendaciones de IA (asíncronas, con fallback)
+`ai-service` (FastAPI, puerto 8000) lee el stream de transferencias con su propio grupo (`ai-recs`) y genera
+recomendaciones por cuenta (reglas + modelo estadístico simple sobre las features del ETL). Las transferencias **nunca**
+lo esperan: si el ai-service está lento o apagado, `core-api` responde recomendaciones de respaldo en < 500 ms.
+```powershell
+Invoke-RestMethod http://localhost:3000/v1/accounts/1000000016/recommendations   # source: "model"
+# Simular un ai-service lento (5 s) y volver a consultar: source: "fallback", degraded: true
+Invoke-RestMethod -Method Post http://localhost:8000/admin/mode -Body '{"mode":"slow","delay_ms":5000}' -ContentType "application/json"
+Invoke-RestMethod http://localhost:3000/v1/accounts/1000000016/recommendations
+docker compose stop ai-service        # apagado: sigue respondiendo el fallback; las transferencias siguen dando 201
+docker compose start ai-service
+Invoke-RestMethod -Method Post http://localhost:8000/admin/mode -Body '{"mode":"normal"}' -ContentType "application/json"
+```
+Verificación completa (incluye latencias medidas de las transferencias): `powershell -ExecutionPolicy Bypass -File scriptserificar-paso3.ps1`.
+Decisiones: [ADR-0004](docs/adr/0004-ia-asincrona-con-fallback.md).
+
 ## Pruebas automáticas
 ```bash
 docker compose up -d postgres redis
@@ -128,9 +144,12 @@ docker compose down -v     # borra también los datos (vuelve a cargar el esquem
 | POST | `/v1/transfers` | Transferencia entre cuentas (idempotente) |
 | GET | `/v1/accounts/{accountNumber}` | Datos y saldo de la cuenta |
 | GET | `/v1/accounts/{accountNumber}/movements` | Movimientos paginados |
+| GET | `/v1/accounts/{accountNumber}/recommendations` | Recomendaciones de IA (con fallback si la IA no responde) |
 | GET | `/health` | Estado del servicio y la base de datos |
 | GET | `:4000/bancs/stats` | (Bancs simulado) estadísticas de las llamadas recibidas |
 | POST | `:4000/bancs/admin/outage` | (Bancs simulado) apagar/encender el legado para la demo |
+| GET | `:8000/health` · `:8000/model` | (ai-service) estado, consumo del stream e información del modelo |
+| POST | `:8000/admin/mode` | (ai-service) `normal`, `slow` o `down` para demostrar la degradación |
 
 ## Documentación
 - Decisiones de arquitectura: [`docs/adr/`](docs/adr)

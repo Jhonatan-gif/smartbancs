@@ -128,12 +128,12 @@ function New-Transfer {
 }
 
 # Ejecuta "npm test" en un servicio y devuelve la salida limpia de codigos ANSI.
-function Invoke-VitestSuite([string]$Servicio) {
+function Invoke-VitestSuite([string]$Servicio, [string[]]$Archivos = @()) {
     $dir = Join-Path $script:RepoRoot "services\$Servicio"
     Push-Location $dir
     try {
         if (-not (Test-Path 'node_modules')) { Invoke-Native -Exe 'npm' -Arguments @('ci') | Out-Null }
         $env:DATABASE_URL = Get-DatabaseUrl
-        return Invoke-Native -Exe 'npm' -Arguments @('test')
+        return Invoke-Native -Exe 'npm' -Arguments (@('test', '--') + $Archivos)
     } finally { Pop-Location }
 }

@@ -5,8 +5,10 @@ import { pool } from './infra/db';
 import { AppError, mapDbError } from './shared/errors';
 import { accountRoutes } from './modules/accounts/accounts.routes';
 import { transferRoutes } from './modules/transfers/transfer.routes';
+import { AiClient } from './modules/recommendations/ai-client';
+import { recommendationRoutes } from './modules/recommendations/recommendations.routes';
 
-export function buildApp() {
+export function buildApp(opts: { aiClient?: AiClient } = {}) {
   const app = Fastify({
     logger: { level: config.logLevel },
     // Correlation id: se respeta el que envíe el cliente o se genera uno.
@@ -55,6 +57,17 @@ export function buildApp() {
 
   app.register(transferRoutes, { prefix: '/v1' });
   app.register(accountRoutes, { prefix: '/v1' });
+  app.register(recommendationRoutes, {
+    prefix: '/v1',
+    aiClient:
+      opts.aiClient ??
+      new AiClient({
+        baseUrl: config.aiServiceUrl,
+        timeoutMs: config.aiTimeoutMs,
+        breakerThreshold: config.aiBreakerThreshold,
+        breakerCooldownMs: config.aiBreakerCooldownMs,
+      }),
+  });
 
   return app;
 }

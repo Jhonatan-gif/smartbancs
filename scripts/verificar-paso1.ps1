@@ -102,7 +102,7 @@ Check 'DELETE sobre ledger_entries es rechazado por el trigger' ($del.Output -ma
 
 if (-not $SinTests) {
     Titulo 'Tests de core-api (vitest)'
-    $t = Invoke-VitestSuite 'core-api'
+    $t = Invoke-VitestSuite 'core-api' @('test/transfers.concurrency.test.ts')
     $ok = ($t.ExitCode -eq 0) -and ($t.Output -match 'Tests\s+8 passed') -and ($t.Output -notmatch '\d+ failed')
     $resumen = ($t.Output -split "`n" | Where-Object { $_ -match '^\s*(Tests|Test Files)\s' }) -join ' | '
     Check '8 tests pasan (concurrencia, idempotencia, deadlocks)' $ok $resumen

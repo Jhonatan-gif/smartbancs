@@ -23,4 +23,10 @@ export const config = {
   lockOrdering: (process.env.LOCK_ORDERING ?? 'on') !== 'off',
   // Pausa artificial entre el primer y el segundo bloqueo (solo con LOCK_ORDERING=off).
   simulatedLockDelayMs: int(process.env.SIMULATED_LOCK_DELAY_MS, 0),
+
+  // ai-service (recomendaciones). NO participa en las transferencias: solo lo usa el endpoint de recomendaciones.
+  aiServiceUrl: process.env.AI_SERVICE_URL ?? 'http://localhost:8000',
+  aiTimeoutMs: int(process.env.AI_TIMEOUT_MS, 300),
+  aiBreakerThreshold: int(process.env.AI_BREAKER_THRESHOLD, 3),
+  aiBreakerCooldownMs: int(process.env.AI_BREAKER_COOLDOWN_MS, 10_000),
 };

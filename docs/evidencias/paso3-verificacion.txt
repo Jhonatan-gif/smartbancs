@@ -1,0 +1,61 @@
+
+== Servicios
+  [PASS] Servicio postgres sano
+         State=running Health=healthy
+  [PASS] Servicio redis sano
+         State=running Health=healthy
+  [PASS] Servicio bancs-mock sano
+         State=running Health=healthy
+  [PASS] Servicio core-api sano
+         State=running Health=healthy
+  [PASS] Servicio ai-service sano
+         State=running Health=healthy
+  [PASS] Servicio worker en ejecucion
+
+== ai-service: modelo y consumo del stream
+  [PASS] ai-service sano, con modelo y features cargados
+         modelo=zscore-seg-v1 cuentas=42 features=/data/sample/account_features.csv
+  [PASS] Grupos independientes en el stream: ai-recs y bancs-sync
+  [PASS] Una transferencia nueva llega al ai-service por el stream (asincrono)
+         procesados: 1416 -> 1417
+
+== Recomendaciones con todo sano
+  [PASS] GET /recommendations = 200 con source=model
+         modelo=zscore-seg-v1 segmento=alto en 16.4 ms
+  [PASS] Trae entre 1 y 4 recomendaciones con titulo y mensaje
+  [PASS] Cuenta inexistente = 404
+         HTTP 404
+
+== Referencia: transferencias con el ai-service sano
+  [PASS] 40 transferencias = 201
+         p50=16.6 ms  p95=28.9 ms  max=29.8 ms
+
+== ai-service LENTO (5 s por respuesta)
+  [PASS] Las 40 transferencias siguen dando 201
+         p50=16.3 ms  p95=33.5 ms  max=42.7 ms (referencia: p50=16.6 p95=28.9)
+  [PASS] La latencia p95 de las transferencias sigue < 2000 ms
+         p95=33.5 ms
+  [PASS] Las 40 consultas de recomendaciones = 200 con fallback
+         todas resueltas en 0.71 s (no esperaron los 5 s del ai-service)
+  [PASS] Fallback secuencial en < 500 ms (5 de 5)
+         maximo=13.6 ms razones=circuit_open
+  [PASS] Con el circuito abierto el fallback es inmediato (< 100 ms)
+         razon=circuit_open en 12.8 ms
+
+== ai-service APAGADO (contenedor detenido)
+  [PASS] Con el ai-service apagado, 30 transferencias = 201
+         p50=15.6 ms  p95=19 ms  max=28.5 ms
+  [PASS] Recomendaciones = fallback en < 500 ms (5 de 5)
+         maximo=12.2 ms
+
+== Recuperacion
+  [PASS] El ai-service vuelve a estar sano
+  [PASS] core-api vuelve a servir recomendaciones del modelo solo (breaker cerrado)
+  [PASS] Los eventos ocurridos mientras estuvo caido se procesan al volver (no se pierden)
+         procesados tras volver=30
+  [PASS] La caida de la IA no afecto a Bancs: DLQ vacia
+         XLEN=0
+
+  (tests omitidos con -SinTests)
+
+PASO 3 : 24/24 chequeos OK, 0 fallos
