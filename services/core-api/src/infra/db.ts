@@ -1,0 +1,35 @@
+import { Pool, PoolClient } from 'pg';
+import { config } from '../config';
+
+export const pool = new Pool({
+  connectionString: config.databaseUrl,
+  max: config.dbPoolMax,
+  // Si el pool está agotado, falla rápido (503) en vez de encolar sin límite.
+  connectionTimeoutMillis: config.dbConnectTimeoutMs,
+  statement_timeout: config.dbStatementTimeoutMs,
+  // Una transacción no espera un bloqueo indefinidamente.
+  options: `-c lock_timeout=${config.dbLockTimeoutMs}`,
+});
+
+/**
+ * Ejecuta `fn` dentro de una transacción (READ COMMITTED + bloqueos de fila
+ * explícitos). Hace COMMIT si termina bien y ROLLBACK ante cualquier error.
+ */
+export async function withTransaction<T>(fn: (client: PoolClient) => Promise<T>): Promise<T> {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const result = await fn(client);
+    await client.query('COMMIT');
+    return result;
+  } catch (err) {
+    try {
+      await client.query('ROLLBACK');
+    } catch {
+      /* la conexión pudo haberse caído; se ignora */
+    }
+    throw err;
+  } finally {
+    client.release();
+  }
+}

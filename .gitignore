@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.env
+*.log
+.DS_Store
+coverage/
+.vite/
+.venv/
+__pycache__/
+etl/data/processed/
+
+# Notas locales de trabajo (no van al repo del jurado)
+CLAUDE.md
+.claude/
+docs/PLAN.md
+docs/reto/

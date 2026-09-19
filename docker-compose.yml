@@ -1,0 +1,55 @@
+# SmartBancs - entorno de desarrollo.  Un solo comando:  docker compose up --build
+name: smartbancs
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-smartbancs}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-smartbancs}
+      POSTGRES_DB: ${POSTGRES_DB:-smartbancs}
+    # Parámetros pensados para diagnosticar el incidente de la sección 3.5:
+    #  - deadlock_timeout bajo: los deadlocks se detectan en 0.5 s
+    #  - log_lock_waits: registra las esperas de bloqueo
+    #  - log_min_duration_statement: registra las consultas lentas
+    command: >
+      postgres
+      -c max_connections=200
+      -c deadlock_timeout=500ms
+      -c log_lock_waits=on
+      -c log_min_duration_statement=200
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Se ejecutan en orden alfabético solo la primera vez (volumen vacío)
+      - ./db/migrations/001_schema.sql:/docker-entrypoint-initdb.d/001_schema.sql:ro
+      - ./db/seeds/001_seed.sql:/docker-entrypoint-initdb.d/002_seed.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-smartbancs} -d ${POSTGRES_DB:-smartbancs}"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  core-api:
+    build: ./services/core-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PORT: 3000
+      DATABASE_URL: postgres://${POSTGRES_USER:-smartbancs}:${POSTGRES_PASSWORD:-smartbancs}@postgres:5432/${POSTGRES_DB:-smartbancs}
+      LOCK_ORDERING: ${LOCK_ORDERING:-on}
+      SIMULATED_LOCK_DELAY_MS: ${SIMULATED_LOCK_DELAY_MS:-0}
+      DB_POOL_MAX: ${DB_POOL_MAX:-20}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/health || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:
