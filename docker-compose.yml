@@ -108,6 +108,15 @@ services:
       BREAKER_COOLDOWN_MS: ${BREAKER_COOLDOWN_MS:-5000}
       LOG_LEVEL: ${LOG_LEVEL:-info}
 
+  # ETL de transacciones (Python). No arranca con `docker compose up`: se ejecuta bajo demanda con
+  #   docker compose run --rm etl              (limpia el CSV de muestra -> etl/data/processed)
+  #   docker compose run --rm etl python -m pytest -q
+  etl:
+    build: ./etl
+    profiles: ["etl"]
+    volumes:
+      - ./etl/data:/app/data
+
 volumes:
   pgdata:
   redisdata:

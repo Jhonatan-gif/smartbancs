@@ -83,6 +83,19 @@ curl -X POST localhost:4000/bancs/admin/outage -H 'content-type: application/jso
 # ...el worker se recupera y sincroniza todo lo pendiente sin perder nada ni duplicar.
 ```
 
+## ETL: limpieza de transacciones (Python)
+Toma un extracto crudo y "sucio" (fechas y montos en formatos mezclados, nulos, duplicados, cuentas inválidas,
+montos negativos, outliers) y produce datos limpios en Parquet, features por cuenta y un reporte de calidad.
+```powershell
+docker compose run --rm etl                        # limpia etl/data/sample/dirty_transactions.csv (2.000 filas)
+docker compose run --rm etl python -m pytest -q    # 46 pruebas del ETL
+```
+Salidas en `etl/data/processed/` (no se sube a git): `transactions_clean.parquet` (monto `DECIMAL(18,2)`),
+`account_features.parquet|csv`, `rejected_rows.csv` (cada fila rechazada con su motivo) y `quality_report.md|json`.
+Resultado sobre la muestra versionada: [`docs/evidencias/etl-reporte-calidad.md`](docs/evidencias/etl-reporte-calidad.md).
+Sin Docker: `cd etl; python -m venv .venv; .venv\Scripts\pip install -r requirements.txt; .venv\Scripts\python -m smartbancs_etl.pipeline`.
+Decisiones: [ADR-0003](docs/adr/0003-etl-limpieza-y-features.md).
+
 ## Pruebas automáticas
 ```bash
 docker compose up -d postgres redis
