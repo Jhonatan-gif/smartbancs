@@ -11,6 +11,12 @@ export const pool = new Pool({
   options: `-c lock_timeout=${config.dbLockTimeoutMs}`,
 });
 
+// Una conexión inactiva puede morir (reinicio de PostgreSQL, corte de red). Sin este manejador
+// el evento 'error' no capturado tumba el proceso; con él, el pool descarta el cliente y reconecta.
+pool.on('error', (err) => {
+  console.error(JSON.stringify({ level: 'error', service: 'core-api', msg: 'error en conexión inactiva del pool', err: err.message }));
+});
+
 /**
  * Ejecuta `fn` dentro de una transacción (READ COMMITTED + bloqueos de fila
  * explícitos). Hace COMMIT si termina bien y ROLLBACK ante cualquier error.

@@ -13,6 +13,7 @@
 | `db/` (DDL/DML) | Borrador del esquema (ledger, outbox, idempotencia) | Revisión, ajustes y validación |
 | `services/core-api` (transferencias, cuentas, movimientos) | Borrador inicial del código y de las pruebas | Revisión línea por línea, ejecución y ajustes |
 | `docker-compose.yml`, `Dockerfile` | Borrador inicial | Ejecución y verificación en mi entorno |
+| `services/bancs-mock`, `services/worker` (outbox, Redis Streams, lotes, rate limit, circuit breaker) | Borrador inicial del código y de las pruebas | Revisión, ejecución de pruebas y ajustes |
 | Documentación (`docs/`) | Borradores de ADR y README | Edición y adaptación |
 
 ## Verificación

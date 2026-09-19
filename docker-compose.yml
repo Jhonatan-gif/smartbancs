@@ -19,12 +19,14 @@ services:
       -c log_lock_waits=on
       -c log_min_duration_statement=200
     ports:
+      # Configurable por si el puerto 5432 ya está ocupado por un PostgreSQL local
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
       # Se ejecutan en orden alfabético solo la primera vez (volumen vacío)
       - ./db/migrations/001_schema.sql:/docker-entrypoint-initdb.d/001_schema.sql:ro
       - ./db/seeds/001_seed.sql:/docker-entrypoint-initdb.d/002_seed.sql:ro
+      - ./db/migrations/002_bancs_sync.sql:/docker-entrypoint-initdb.d/003_bancs_sync.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-smartbancs} -d ${POSTGRES_DB:-smartbancs}"]
       interval: 3s
@@ -51,5 +53,61 @@ services:
       timeout: 3s
       retries: 10
 
+  redis:
+    image: redis:7-alpine
+    # appendonly: los eventos en Redis Streams sobreviven a un reinicio
+    command: redis-server --appendonly yes
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  # Core bancario legado SIMULADO: lento, con límite de tasa y con fallos aleatorios.
+  bancs-mock:
+    build: ./services/bancs-mock
+    environment:
+      PORT: 4000
+      BANCS_LATENCY_MIN_MS: ${BANCS_LATENCY_MIN_MS:-200}
+      BANCS_LATENCY_MAX_MS: ${BANCS_LATENCY_MAX_MS:-600}
+      BANCS_MAX_RPS: ${BANCS_MAX_RPS:-10}
+      BANCS_MAX_CONCURRENCY: ${BANCS_MAX_CONCURRENCY:-5}
+      BANCS_FAILURE_RATE: ${BANCS_FAILURE_RATE:-0.1}
+      BANCS_LOST_RESPONSE_RATE: ${BANCS_LOST_RESPONSE_RATE:-0.05}
+    ports:
+      - "4000:4000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:4000/health || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # Publica los eventos del outbox y sincroniza con Bancs (lotes + rate limit + circuit breaker).
+  worker:
+    build: ./services/worker
+    # Si el proceso muere por algo inesperado, vuelve a levantarse solo
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      bancs-mock:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-smartbancs}:${POSTGRES_PASSWORD:-smartbancs}@postgres:5432/${POSTGRES_DB:-smartbancs}
+      REDIS_URL: redis://redis:6379
+      BANCS_URL: http://bancs-mock:4000
+      BANCS_BATCH_SIZE: ${BANCS_BATCH_SIZE:-25}
+      BANCS_MAX_CALLS_PER_SEC: ${BANCS_MAX_CALLS_PER_SEC:-5}
+      BREAKER_THRESHOLD: ${BREAKER_THRESHOLD:-5}
+      BREAKER_COOLDOWN_MS: ${BREAKER_COOLDOWN_MS:-5000}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+
 volumes:
   pgdata:
+  redisdata:
