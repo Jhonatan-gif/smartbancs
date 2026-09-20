@@ -1,0 +1,20 @@
+sequenceDiagram
+  participant C as Cliente
+  participant A as core-api
+  participant P as PostgreSQL
+  participant W as worker
+  participant R as Redis Streams
+  participant B as Bancs
+  C->>A: POST /v1/transfers (Idempotency-Key)
+  A->>P: ¿clave ya usada? (camino rápido)
+  A->>P: BEGIN · lock ambas cuentas ORDER BY id FOR UPDATE
+  A->>P: INSERT transactions (UNIQUE idempotency_key)
+  A->>P: UPDATE débito WHERE balance >= monto · UPDATE crédito
+  A->>P: INSERT 2 asientos en ledger_entries · INSERT outbox_events · COMMIT
+  A-->>C: 201 (o 200 replayed / 422 / 404 ...)
+  W->>P: lee outbox (FOR UPDATE SKIP LOCKED) y marca publicado
+  W->>R: XADD transfers.completed (con traceparent)
+  R->>W: XREADGROUP bancs-sync
+  W->>B: POST /postings/batch (referencia = id de la transacción)
+  B-->>W: APPLIED o DUPLICATE
+  W->>P: bancs_sync = SYNCED, luego ACK

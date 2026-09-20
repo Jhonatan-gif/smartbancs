@@ -1,0 +1,15 @@
+flowchart LR
+  C[Cliente] -->|POST /v1/transfers<br/>Idempotency-Key| LB[nginx<br/>opcional: N réplicas]
+  LB --> API[core-api<br/>Node 22 + Fastify]
+  API -->|1 transacción SQL| PG[(PostgreSQL 16<br/>ledger + outbox)]
+  PG -->|outbox| W[worker<br/>relay + sincronización]
+  W -->|XADD| R[(Redis 7 Streams<br/>transfers.completed)]
+  R -->|grupo bancs-sync| W
+  W -->|lotes de 25, máx. 5 llamadas/s<br/>backoff + circuit breaker + DLQ| B[Bancs simulado<br/>core legado]
+  R -->|grupo ai-recs| AI[ai-service<br/>FastAPI]
+  API -.->|timeout 300 ms + breaker + fallback| AI
+  ETL[ETL Python<br/>limpieza + features] -.->|features por cuenta| AI
+  API & W & AI -->|/metrics| PROM[Prometheus]
+  API & W -->|OTLP| TEMPO[Tempo]
+  API & W & AI & PG -->|logs JSON| LOKI[Loki]
+  PROM & TEMPO & LOKI --> G[Grafana]

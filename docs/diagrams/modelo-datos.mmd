@@ -1,0 +1,19 @@
+erDiagram
+  customers ||--o{ accounts : tiene
+  accounts ||--o{ ledger_entries : "asientos (inmutables)"
+  transactions ||--|{ ledger_entries : "2 asientos: débito y crédito"
+  transactions ||--o| bancs_sync : "estado de sincronización"
+  transactions ||--o| outbox_events : "evento (misma transacción)"
+  accounts {
+    text account_number "10 digitos, Luhn"
+    numeric balance "NUMERIC(18,2), nunca negativo"
+  }
+  transactions {
+    text idempotency_key "UNIQUE"
+    text request_hash
+    numeric amount
+  }
+  ledger_entries {
+    text direction "DEBIT o CREDIT"
+    numeric balance_after
+  }

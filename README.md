@@ -88,13 +88,14 @@ Toma un extracto crudo y "sucio" (fechas y montos en formatos mezclados, nulos, 
 montos negativos, outliers) y produce datos limpios en Parquet, features por cuenta y un reporte de calidad.
 ```powershell
 docker compose run --rm etl                        # limpia etl/data/sample/dirty_transactions.csv (2.000 filas)
-docker compose run --rm etl python -m pytest -q    # 46 pruebas del ETL
+docker compose run --rm etl python -m pytest -q    # 54 pruebas del ETL
+docker compose run --rm etl python -m smartbancs_etl.drift   # demostración de data drift (PSI y KS)
 ```
 Salidas en `etl/data/processed/` (no se sube a git): `transactions_clean.parquet` (monto `DECIMAL(18,2)`),
 `account_features.parquet|csv`, `rejected_rows.csv` (cada fila rechazada con su motivo) y `quality_report.md|json`.
 Resultado sobre la muestra versionada: [`docs/evidencias/etl-reporte-calidad.md`](docs/evidencias/etl-reporte-calidad.md).
 Sin Docker: `cd etl; python -m venv .venv; .venv\Scripts\pip install -r requirements.txt; .venv\Scripts\python -m smartbancs_etl.pipeline`.
-Decisiones: [ADR-0003](docs/adr/0003-etl-limpieza-y-features.md).
+Decisiones: [ADR-0003](docs/adr/0003-etl-limpieza-y-features.md). Demostración de *data drift* medida: [`docs/evidencias/drift-demo.md`](docs/evidencias/drift-demo.md).
 
 ## Estados de cuenta (CSV y PDF)
 ```powershell
@@ -189,5 +190,6 @@ docker compose down -v     # borra también los datos (vuelve a cargar el esquem
 
 ## Documentación
 - Decisiones de arquitectura: [`docs/adr/`](docs/adr)
+- **Documento técnico completo:** [`docs/documento-tecnico.md`](docs/documento-tecnico.md) (arquitectura, Bancs, IA y ciclo de vida del modelo, incidente y post mortem, limitaciones)
 - Observabilidad (diseño, uso e incidente): [`docs/observabilidad.md`](docs/observabilidad.md)
 - Declaración de uso de IA: [`AI_USAGE.md`](AI_USAGE.md)

@@ -68,7 +68,9 @@ def _fmt_date(rng: random.Random, dt: datetime) -> str:
     }[style]
 
 
-def generate_dirty(n_rows: int = 2000, seed: int = 42, end: datetime | None = None, n_accounts: int = 40) -> pd.DataFrame:
+def generate_dirty(n_rows: int = 2000, seed: int = 42, end: datetime | None = None, n_accounts: int = 40,
+                   amount_scale: float = 1.0) -> pd.DataFrame:
+    """`amount_scale` multiplica los montos: sirve para simular un cambio de comportamiento (drift) en las pruebas."""
     rng = random.Random(seed)
     end = end or datetime(2026, 9, 15, 12, 0, tzinfo=timezone.utc)
     accounts = _accounts(rng, n_accounts)
@@ -82,7 +84,7 @@ def generate_dirty(n_rows: int = 2000, seed: int = 42, end: datetime | None = No
         cp = rng.choice([a for a in accounts if a != acc])
         level, favorite = profiles[acc]
         category = rng.choice(favorite) if rng.random() < 0.7 else rng.choice(CATEGORIES)
-        amount = round(max(0.5, rng.lognormvariate(0, 0.6) * level), 2)
+        amount = round(max(0.5, rng.lognormvariate(0, 0.6) * level * amount_scale), 2)
         when = end - timedelta(seconds=rng.randint(0, 90 * 86400))
         row = {
             "transaction_id": f"TX{i + 1:07d}",
