@@ -3,32 +3,39 @@
 > Requisito del reto: indicar las herramientas empleadas, cómo se utilizaron y en qué componentes.
 
 ## Herramientas
-- **Claude (Anthropic)**: asistente conversacional, usado para consultar opciones de diseño y obtener borradores.
-- **Claude Code (Anthropic)**: asistente de programación en el editor, usado para generar borradores de código, pruebas
-  y scripts, y para ejecutar comprobaciones sobre el repositorio.
+- **Claude (Anthropic)**: asistente conversacional, usado para consultar opciones de diseño, planificar y obtener borradores.
+- **Claude Code (Anthropic)**: asistente de programación en el editor. Escribió gran parte del código, las pruebas, los scripts y la documentación
+  a partir de las indicaciones del autor, y **ejecutó** las pruebas y verificaciones sobre el repositorio.
 
-## Cómo se usó y en qué componentes
-Las decisiones de alcance, stack, reglas de negocio y criterios de aceptación las definí yo a partir del enunciado.
-La IA se usó como apoyo de implementación; cada resultado se ejecutó y se comprobó con pruebas antes de incluirse.
+## Qué hizo la IA y qué decidió el autor
+**La IA (Claude Code) escribió la mayor parte del código y de los documentos de este repositorio.** El autor definió los requisitos y el alcance a partir del enunciado,
+eligió el stack, fijó las reglas de trabajo (probar antes de afirmar, no inventar cifras, una ADR por decisión relevante, un commit por bloque funcional), aprobó el plan de cada bloque
+antes de que se programara y orientó las correcciones. La responsabilidad final del contenido es del autor.
 
-| Componente | Apoyo de la IA | Trabajo propio |
+| Componente | Qué hizo la IA | Decisiones del autor |
 |---|---|---|
-| Arquitectura y plan del proyecto | Alternativas de diseño y estructura de carpetas | Elección final de tecnologías, justificación y priorización |
-| `db/` (DDL/DML) | Borrador del esquema (ledger, outbox, idempotencia) | Revisión, ajustes y validación |
-| `services/core-api` (transferencias, cuentas, movimientos) | Borrador del código y de las pruebas de concurrencia | Ejecución de las pruebas, revisión y ajustes |
-| `docker-compose.yml`, `Dockerfile` | Borrador inicial | Ejecución y verificación en mi entorno |
-| `services/bancs-mock`, `services/worker` (outbox, Redis Streams, lotes, rate limit, circuit breaker) | Borrador del código y de las pruebas | Ejecución de pruebas, revisión y ajustes |
-| `scripts/verificar-paso*.ps1` | Borrador de los scripts de verificación (PASS/FAIL) y de una corrección de resiliencia: manejador `error` del pool de PostgreSQL | Ejecución, análisis de los resultados y decisión de qué se verifica |
-| `etl/` (limpieza, features, reporte de calidad, generador de datos sucios y pruebas) | Borrador del código y de las pruebas | Reglas de negocio (qué se rechaza, qué se imputa), ejecución y revisión de resultados |
-| `services/ai-service` (consumidor del stream, modelo estadístico, reglas) y `core-api/src/modules/recommendations` (timeout, circuit breaker, fallback) | Borrador del código y de las pruebas | Definición de las reglas de recomendación, del comportamiento ante fallos (qué se degrada y cómo), ejecución y revisión de resultados |
-| `observability/` (Prometheus, alertas, Loki, Alloy, Tempo, Grafana y dashboards), métricas/logs/trazas en core-api, worker y ai-service, `scripts/verificar-paso4.ps1` | Borrador del código, las configuraciones, los dashboards (generados con un script) y las pruebas | Qué se mide y con qué umbrales, qué es un incidente, qué dato identifica el problema; ejecución y revisión. Se detectaron y corrigieron dos defectos reales al verificar: alertas que no se disparaban con contadores sin inicializar y números de cuenta completos en los logs |
-| `loadtest/` (k6), `scripts/run-loadtest.ps1`, `find-limit.ps1`, `simulate-incident.ps1`, `docker-compose.scale.yml`, runbook y post mortem | Borrador de los scripts y de los documentos; ejecución de las pruebas y análisis de resultados | Qué se mide y con qué umbrales; interpretación de las cifras (incluye no afirmar 10.000 TPS). Al medir se detectaron y corrigieron: conexiones nuevas en pleno pico (pool precalentado), un error de conexión devuelto como 500 en vez de 503, y un fallo de mi propio seed que reiniciaba saldos |
-| `core-api/src/modules/statements` (estado de cuenta CSV/PDF), pruebas y `scripts/verificar-estados-cuenta.ps1` | Borrador del código, del generador de PDF y de las pruebas | Reglas del estado de cuenta (periodo, saldo inicial, cuadre con el ledger), ejecución y revisión. Al probar se corrigió el formato de los totales vacíos (`0` → `0.00`) y el PDF se contrastó con un lector de terceros |
-| `etl/smartbancs_etl/drift.py` (PSI y KS) y `docs/documento-tecnico.md` (con diagramas Mermaid) | Borrador del código, de las pruebas y del documento | Criterios de reentrenamiento, qué se afirma y qué se declara como no probado; revisión de cada cifra contra las mediciones. Al medir la demostración de drift se documentó un falso positivo de KS con muestras grandes en lugar de ocultarlo |
-| Documentación (`docs/`, README) | Borradores de ADR y README | Edición y adaptación |
+| Arquitectura y plan del proyecto | Propuso alternativas, estructura de carpetas y un plan por commits | Stack, priorización, recortes admisibles y calendario |
+| `db/` (esquema, datos de prueba) | Escribió el esquema (ledger, outbox, idempotencia) | Modelo de cuentas y datos de prueba aprobados |
+| `services/core-api` (transferencias, cuentas, movimientos) | Código y pruebas de concurrencia | Reglas de negocio de la transferencia y de sus errores |
+| `docker-compose.yml`, Dockerfiles | Escribió y depuró la orquestación | Un solo comando para levantar todo; perfiles opcionales |
+| `services/bancs-mock`, `services/worker` (outbox, Redis Streams, lotes, rate limit, circuit breaker, DLQ) | Código y pruebas | Comportamiento esperado ante caídas del legado |
+| `services/ai-service` y `core-api/src/modules/recommendations` | Código, reglas de recomendación y pruebas | Que la IA nunca bloquee la transferencia y degrade con *fallback* |
+| `etl/` (limpieza, features, reporte de calidad, drift, generador de datos) | Código y pruebas | Qué se rechaza y qué se imputa; criterio de reentrenamiento |
+| `observability/` y la instrumentación de los servicios (métricas, logs JSON, trazas, dashboards, alertas) | Código, configuración y dashboards (generados con un script) | Qué debe poder diagnosticarse (incidente 3.5) y con qué señales |
+| `loadtest/`, `scripts/run-loadtest.ps1`, `find-limit.ps1`, `simulate-incident.ps1`, `docker-compose.scale.yml` | Scripts, ejecución de las mediciones y análisis de resultados | No afirmar 10.000 TPS ni cifras no medidas |
+| `core-api/src/modules/statements` (estados de cuenta CSV/PDF) | Código, generador de PDF y pruebas | Contenido y reglas del estado de cuenta |
+| `scripts/verificar-*.ps1` | Scripts de verificación PASS/FAIL y su ejecución | Qué se verifica en cada bloque |
+| Documentación (`docs/`, ADR, runbook, post mortem, documento técnico, README) | Borradores completos | Enfoque, tono y qué se declara como no probado |
 
-## Verificación
-El código se ejecutó y se probó antes de incluirlo en el repositorio: pruebas automáticas (concurrencia, idempotencia,
-integración con el simulador de Bancs, ETL), scripts de verificación con resultado PASS/FAIL y pruebas manuales de la API.
+## Cómo se verificó
+La IA ejecutó el código y las pruebas antes de cada commit: pruebas automáticas (concurrencia, idempotencia, integración con el simulador de Bancs, ETL, IA, métricas, estados de cuenta),
+verificadores de extremo a extremo con resultado PASS/FAIL, pruebas de carga con k6 y la simulación del incidente; las salidas están en `docs/evidencias/`.
+Al verificar se encontraron y corrigieron defectos reales, entre ellos:
+- el worker y core-api caían si PostgreSQL reiniciaba (faltaba el manejador de error del pool);
+- alertas que no se disparaban con contadores nunca inicializados;
+- números de cuenta completos en los logs de acceso;
+- conexiones nuevas en pleno pico y un error de conexión devuelto como 500 en lugar de 503;
+- el formato de los totales vacíos de un estado de cuenta (`0` en vez de `0.00`);
+- un *seed* de pruebas que reiniciaba saldos y daba un falso desajuste del ledger.
 
-<!-- Actualizar esta tabla al agregar componentes (slides, guion). -->
+Las limitaciones que no se pudieron resolver (p. ej. 10.000 TPS no alcanzados, sin autenticación) se declaran en `docs/documento-tecnico.md` (sección 14) en lugar de ocultarse.

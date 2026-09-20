@@ -1,23 +1,33 @@
-.PHONY: up down reset logs db test test-worker
+.PHONY: up down reset logs db test test-worker test-ai test-etl obs verify-all
 
 up:
-$\tdocker compose up --build -d
+	docker compose up --build -d
 
 down:
-$\tdocker compose down
+	docker compose --profile obs --profile etl down
 
 reset:
-$\tdocker compose down -v
+	docker compose --profile obs --profile etl down -v
 
 logs:
-$\tdocker compose logs -f core-api worker
+	docker compose logs -f core-api worker ai-service
 
 db:
-$\tdocker compose up -d postgres redis
+	docker compose up -d postgres redis
+
+# Observabilidad (Grafana en http://localhost:3001)
+obs:
+	docker compose --profile obs up -d --build
 
 test: db
-$\tcd services/core-api && npm ci && npm test
+	cd services/core-api && npm ci && npm test
 
 test-worker: db
-$\tcd services/bancs-mock && npm ci
-$\tcd services/worker && npm ci && npm test
+	cd services/bancs-mock && npm ci
+	cd services/worker && npm ci && npm test
+
+test-ai:
+	docker compose exec ai-service python -m pytest -q
+
+test-etl:
+	docker compose run --rm etl python -m pytest -q
