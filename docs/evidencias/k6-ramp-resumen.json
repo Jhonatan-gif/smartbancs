@@ -1,0 +1,17 @@
+﻿{
+    "escenario":  "ramp",
+    "fecha":  "2026-09-19T18:21:28",
+    "duracion_s":  183,
+    "k6_exit":  99,
+    "requests":  112024,
+    "req_por_s":  613.3,
+    "p50_ms":  3071.5,
+    "p95_ms":  3917.0,
+    "p99_ms":  4017.4,
+    "errores_pct":  41.159,
+    "iteraciones_no_lanzadas":  48698,
+    "creadas":  64011,
+    "repeticiones":  3237,
+    "pendientes_bancs":  78321,
+    "sync_por_s":  53.9
+}

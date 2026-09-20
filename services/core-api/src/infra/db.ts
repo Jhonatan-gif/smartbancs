@@ -4,6 +4,7 @@ import { config } from '../config';
 export const pool = new Pool({
   connectionString: config.databaseUrl,
   max: config.dbPoolMax,
+  min: config.dbPoolMin,
   // Si el pool está agotado, falla rápido (503) en vez de encolar sin límite.
   connectionTimeoutMillis: config.dbConnectTimeoutMs,
   statement_timeout: config.dbStatementTimeoutMs,
@@ -38,4 +39,11 @@ export async function withTransaction<T>(fn: (client: PoolClient) => Promise<T>)
   } finally {
     client.release();
   }
+}
+
+/** Abre `dbPoolMin` conexiones a la vez al arrancar, para que el primer pico no pague el coste de crearlas. */
+export async function warmUpPool(): Promise<number> {
+  const clients = await Promise.all(Array.from({ length: config.dbPoolMin }, () => pool.connect()));
+  clients.forEach((c) => c.release());
+  return clients.length;
 }

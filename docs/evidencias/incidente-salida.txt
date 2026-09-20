@@ -1,0 +1,56 @@
+﻿
+== 1. LINEA BASE (LOCK_ORDERING=on, pool 20) - 120 tps sobre 6 cuentas calientes
+  tps=120 p50=5 ms p95=7 ms p99=10 ms errores=0 % deadlocks=0 pool_timeouts=0 lock_timeouts=0
+
+== 2. INCIDENTE (LOCK_ORDERING=off, retraso 150 ms entre bloqueos, pool 8)
+  --- DIAGNOSTICO EN VIVO (durante la carga) ---
+  pool esperando (metrica db_pool_connections{state=waiting}): 393
+  deadlocks acumulados hasta ahora (db_errors_total): 36
+  sesiones activas por evento de espera de PostgreSQL:
+      Lock/transactionid -> 4
+      Lock/tuple -> 4
+  quien bloquea a quien (pg_blocking_pids):
+      pid 706 espera a pid 704 | bloqueada: SELECT id, account_number, currency, status FROM accounts WHERE accoun
+      pid 711 espera a pid 705 | bloqueada: SELECT id, account_number, currency, status FROM accounts WHERE accoun
+      pid 710 espera a pid 706 | bloqueada: SELECT id, account_number, currency, status FROM accounts WHERE accoun
+      pid 708 espera a pid 706 | bloqueada: SELECT id, account_number, currency, status FROM accounts WHERE accoun
+      pid 711 espera a pid 707 | bloqueada: SELECT id, account_number, currency, status FROM accounts WHERE accoun
+  errores por paso SQL (db_op_errors_total): lock_accounts=0 lock_from=13 lock_to=24 insert_tx=0 debit=0 credit=0  <- los errores estan en los pasos de BLOQUEO (lock_from / lock_to), no en las escrituras: el problema es el orden de los bloqueos
+  --- MITIGACION TEMPORAL 1: terminar sesiones bloqueadas por mas de 1 s ---
+  sesiones terminadas: 0 -> no habia bloqueos largos: PostgreSQL ya resuelve cada deadlock a los 500 ms (deadlock_timeout). El dano no viene de sesiones colgadas sino del POOL saturado y de las peticiones que reintentan.
+  --- MITIGACION TEMPORAL 2 (la que funciona): revertir el cambio / apagar el flag -> fase 3 ---
+  tps=7 p50=3563 ms p95=4207 ms p99=5134 ms errores=94.3 % deadlocks=137 pool_timeouts=4247 lock_timeouts=2
+
+== 3. CORRECCION DEFINITIVA (LOCK_ORDERING=on: bloqueo siempre en orden de id)
+  tps=120 p50=5 ms p95=7 ms p99=11 ms errores=0 % deadlocks=0 pool_timeouts=0 lock_timeouts=0
+
+== RESUMEN (medido)
+
+Fase       Tps P50ms P95ms P99ms ErroresPct Deadlocks PoolTimeouts LockTimeouts
+----       --- ----- ----- ----- ---------- --------- ------------ ------------
+linea-base 120     5     7    10          0         0            0            0
+incidente    7  3563  4207  5134       94.3       137         4247            2
+correccion 120     5     7    11          0         0            0            0
+
+
+
+  [PASS] Linea base sana: p95 < 2 s, errores < 1 %, 0 deadlocks
+         p95=7 ms errores=0 %
+  [PASS] El incidente se reproduce: deadlocks y errores
+         deadlocks=137 errores=94.3 %
+  [PASS] El incidente degrada la latencia (p95 mayor que la linea base)
+         p95 7 ms -> 4207 ms
+  [PASS] Tras la correccion: 0 deadlocks
+         deadlocks=0
+
+== CORRECCION DEL DINERO DESPUES DEL INCIDENTE (deadlocks, timeouts y reintentos no pierden ni duplican dinero)
+  [PASS] El saldo total de las cuentas de carga se conserva
+         antes=1000000000000.00 despues=1000000000000.00 (transacciones nuevas en las 3 fases: 9862)
+  [PASS] Cada transaccion tiene 2 asientos y debitos = creditos
+  [PASS] El saldo de cada cuenta coincide con su ultimo asiento
+  [PASS] La cadena de saldos de cada cuenta es continua
+  [PASS] Ninguna cuenta con saldo negativo y ninguna clave idempotente duplicada
+  [PASS] Tras la correccion: p95 < 2 s y errores < 1 %
+         p95=7 ms errores=0 %
+
+INCIDENTE : 10/10 chequeos OK, 0 fallos

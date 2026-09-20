@@ -1,0 +1,125 @@
+﻿
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: C:\Users\Joel Adrian\Documents\Proyecto Joel 2\smartbancs\loadtest\transfers.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 3000 max VUs, 1m0s max duration (incl. graceful stop):
+              * transfers: Up to 1000.00 iterations/s for 30s over 1 stages (maxVUs: 300-3000, gracefulStop: 30s)
+
+
+transfers   [   3% ] 0414/0414 VUs  01.0s/30s  1000.00 iters/s
+
+transfers   [   7% ] 0537/0540 VUs  02.0s/30s  1000.00 iters/s
+
+transfers   [  10% ] 0607/0608 VUs  03.0s/30s  1000.00 iters/s
+
+transfers   [  13% ] 0583/0622 VUs  04.0s/30s  1000.00 iters/s
+
+transfers   [  17% ] 0625/0629 VUs  05.0s/30s  1000.00 iters/s
+
+transfers   [  20% ] 0662/0672 VUs  06.0s/30s  1000.00 iters/s
+
+transfers   [  23% ] 0685/0688 VUs  07.0s/30s  1000.00 iters/s
+
+transfers   [  27% ] 0615/0690 VUs  08.0s/30s  1000.00 iters/s
+
+transfers   [  30% ] 0531/0690 VUs  09.0s/30s  1000.00 iters/s
+
+transfers   [  33% ] 0462/0690 VUs  10.0s/30s  1000.00 iters/s
+
+transfers   [  37% ] 0459/0690 VUs  11.0s/30s  1000.00 iters/s
+
+transfers   [  40% ] 0441/0690 VUs  12.0s/30s  1000.00 iters/s
+
+transfers   [  43% ] 0467/0690 VUs  13.0s/30s  1000.00 iters/s
+
+transfers   [  47% ] 0358/0690 VUs  14.0s/30s  1000.00 iters/s
+
+transfers   [  50% ] 0260/0690 VUs  15.0s/30s  1000.00 iters/s
+
+transfers   [  53% ] 0155/0690 VUs  16.0s/30s  1000.00 iters/s
+
+transfers   [  57% ] 0044/0690 VUs  17.0s/30s  1000.00 iters/s
+
+transfers   [  60% ] 0031/0690 VUs  18.0s/30s  1000.00 iters/s
+
+transfers   [  63% ] 0067/0690 VUs  19.0s/30s  1000.00 iters/s
+
+transfers   [  67% ] 0019/0690 VUs  20.0s/30s  1000.00 iters/s
+
+transfers   [  70% ] 0028/0690 VUs  21.0s/30s  1000.00 iters/s
+
+transfers   [  73% ] 0014/0690 VUs  22.0s/30s  1000.00 iters/s
+
+transfers   [  77% ] 0015/0690 VUs  23.0s/30s  1000.00 iters/s
+
+transfers   [  80% ] 0029/0690 VUs  24.0s/30s  1000.00 iters/s
+
+transfers   [  83% ] 0017/0690 VUs  25.0s/30s  1000.00 iters/s
+
+transfers   [  87% ] 0027/0690 VUs  26.0s/30s  1000.00 iters/s
+
+transfers   [  90% ] 0021/0690 VUs  27.0s/30s  1000.00 iters/s
+
+transfers   [  93% ] 0018/0690 VUs  28.0s/30s  1000.00 iters/s
+
+transfers   [  97% ] 0015/0690 VUs  29.0s/30s  1000.00 iters/s
+
+transfers   [ 100% ] 0037/0690 VUs  30.0s/30s  1000.00 iters/s
+
+
+  █ THRESHOLDS 
+
+    checks
+    ✓ 'rate>0.99' rate=100.00%
+
+    transfer_errors
+    ✓ 'rate<0.01' rate=0.00%
+
+    transfer_latency
+    ✓ 'p(95)<2000' p(95)=674.78ms
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 30981   1031.817923/s
+    checks_succeeded...: 100.00% 30981 out of 30981
+    checks_failed......: 0.00%   0 out of 30981
+
+    ✓ respuesta esperada (201 o 422)
+    ✓ repetición idempotente = 200 y mismo id
+
+    CUSTOM
+    transfer_errors................: 0.00%  0 out of 29541
+    transfer_latency...............: avg=275.34ms min=7.96ms med=184.54ms p(90)=634.6ms  p(95)=674.78ms p(99)=758.41ms max=1.17s
+    transfers_created..............: 29541  983.858922/s
+    transfers_replayed.............: 1440   47.959001/s
+
+    HTTP
+    http_req_duration..............: avg=268.2ms  min=2.64ms med=167.82ms p(90)=631.27ms p(95)=672.99ms p(99)=752.08ms max=1.17s
+      { expected_response:true }...: avg=268.2ms  min=2.64ms med=167.82ms p(90)=631.27ms p(95)=672.99ms p(99)=752.08ms max=1.17s
+    http_req_failed................: 0.00%  0 out of 30981
+    http_reqs......................: 30981  1031.817923/s
+
+    EXECUTION
+    dropped_iterations.............: 453    15.087102/s
+    iteration_duration.............: avg=281.42ms min=8.38ms med=187.97ms p(90)=643.15ms p(95)=689.54ms p(99)=889.33ms max=1.27s
+    iterations.....................: 29541  983.858922/s
+    vus............................: 38     min=14         max=685
+    vus_max........................: 690    min=414        max=690
+
+    NETWORK
+    data_received..................: 14 MB  476 kB/s
+    data_sent......................: 8.7 MB 291 kB/s
+
+
+
+
+transfers ✓ [ 100% ] 0000/0690 VUs  30s  1000.00 iters/s

@@ -1,0 +1,27 @@
+# Escalado horizontal de core-api: varias réplicas detrás de un balanceador (nginx).
+#   docker compose -f docker-compose.yml -f docker-compose.scale.yml up -d --build --scale core-api=4
+# core-api es sin estado (todo el estado está en PostgreSQL), así que se replica sin cambios de código.
+# El balanceador publica el puerto 3000; las réplicas ya no lo publican.
+services:
+  core-api:
+    ports: !reset []
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/health || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  gateway:
+    image: nginx:1.27-alpine
+    depends_on:
+      core-api:
+        condition: service_healthy
+    volumes:
+      - ./infra/nginx/gateway.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/health || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10

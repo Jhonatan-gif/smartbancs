@@ -123,6 +123,19 @@ docker compose --profile obs up -d --build
 - Verificación: `powershell -ExecutionPolicy Bypass -File scriptserificar-paso4.ps1` (incluye provocar un deadlock real y ver que queda identificado el paso SQL).
 - Guía completa, diseño y límites: [`docs/observabilidad.md`](docs/observabilidad.md) · [ADR-0005](docs/adr/0005-observabilidad.md).
 
+## Pruebas de carga e incidente simulado
+```powershell
+powershell -ExecutionPolicy Bypass -File scriptsun-loadtest.ps1 -Scenario smoke     # smoke | load | ramp | hot | fixed -Rate 500
+powershell -ExecutionPolicy Bypass -File scriptsind-limit.ps1 -Rates "400,600,800"  # escalones de tasa fija + CPU de cada contenedor
+powershell -ExecutionPolicy Bypass -File scripts\simulate-incident.ps1                # deadlocks + agotamiento del pool: base -> incidente -> corrección
+# Varias réplicas de core-api detrás de nginx:
+docker compose -f docker-compose.yml -f docker-compose.scale.yml up -d --build --scale core-api=4
+```
+Requiere [k6](https://k6.io/docs/get-started/installation/) (o Docker: se usa `grafana/k6`). Tras cada carga se comprueba que el dinero se conserva y el ledger cuadra.
+**Medido en un portátil:** 1 instancia ≈ 400 tps cumpliendo el requisito (máx. ~570); 4 réplicas ≈ 1.000 tps (máx. ~1.100). **No se alcanzaron 10.000 TPS**: ver
+[`docs/carga-resultados.md`](docs/carga-resultados.md) (método, tablas, límites y camino hacia 10.000), [`docs/runbook-incidente.md`](docs/runbook-incidente.md) y el
+[post mortem de la simulación](docs/postmortem/2026-09-19-simulacion-deadlocks.md). ADR: [0006](docs/adr/0006-pruebas-de-carga-y-escalado.md).
+
 ## Pruebas automáticas
 ```bash
 docker compose up -d postgres redis

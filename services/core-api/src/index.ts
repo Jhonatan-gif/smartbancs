@@ -1,6 +1,6 @@
 import { shutdownTracing } from './observability/tracing'; // DEBE ir primero: instrumenta http/pg/fastify
 import { config } from './config';
-import { pool } from './infra/db';
+import { pool, warmUpPool } from './infra/db';
 import { buildApp } from './server';
 
 const app = buildApp();
@@ -15,8 +15,10 @@ async function shutdown(signal: string) {
 process.on('SIGTERM', () => void shutdown('SIGTERM'));
 process.on('SIGINT', () => void shutdown('SIGINT'));
 
-app
-  .listen({ port: config.port, host: '0.0.0.0' })
+warmUpPool()
+  .then((n) => app.log.info({ connections: n }, 'pool de conexiones precalentado'))
+  .catch((err) => app.log.warn({ err: err.message }, 'no se pudo precalentar el pool'))
+  .then(() => app.listen({ port: config.port, host: '0.0.0.0' }))
   .then(() => app.log.info(`core-api escuchando en :${config.port} (lockOrdering=${config.lockOrdering})`))
   .catch((err) => {
     app.log.error(err);

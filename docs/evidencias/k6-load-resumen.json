@@ -1,0 +1,17 @@
+﻿{
+    "escenario":  "load",
+    "fecha":  "2026-09-19T19:25:07",
+    "duracion_s":  91,
+    "k6_exit":  0,
+    "requests":  24143,
+    "req_por_s":  268.2,
+    "p50_ms":  5.3,
+    "p95_ms":  6.8,
+    "p99_ms":  8.8,
+    "errores_pct":  0,
+    "iteraciones_no_lanzadas":  0,
+    "creadas":  22999,
+    "repeticiones":  1144,
+    "pendientes_bancs":  18773,
+    "sync_por_s":  52
+}

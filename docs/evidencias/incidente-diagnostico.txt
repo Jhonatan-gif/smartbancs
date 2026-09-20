@@ -1,0 +1,13 @@
+﻿pool esperando (metrica db_pool_connections{state=waiting}): 393
+deadlocks acumulados hasta ahora (db_errors_total): 36
+sesiones activas por evento de espera de PostgreSQL:
+      Lock/transactionid -> 4
+      Lock/tuple -> 4
+quien bloquea a quien (pg_blocking_pids):
+      pid 706 espera a pid 704 | bloqueada: SELECT id, account_number, currency, status FROM accounts WHERE accoun
+      pid 711 espera a pid 705 | bloqueada: SELECT id, account_number, currency, status FROM accounts WHERE accoun
+      pid 710 espera a pid 706 | bloqueada: SELECT id, account_number, currency, status FROM accounts WHERE accoun
+      pid 708 espera a pid 706 | bloqueada: SELECT id, account_number, currency, status FROM accounts WHERE accoun
+      pid 711 espera a pid 707 | bloqueada: SELECT id, account_number, currency, status FROM accounts WHERE accoun
+errores por paso SQL (db_op_errors_total): lock_accounts=0 lock_from=13 lock_to=24 insert_tx=0 debit=0 credit=0  <- los errores estan en los pasos de BLOQUEO (lock_from / lock_to), no en las escrituras: el problema es el orden de los bloqueos
+sesiones terminadas como mitigacion temporal: 0

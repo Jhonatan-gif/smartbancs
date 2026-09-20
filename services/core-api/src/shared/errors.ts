@@ -28,7 +28,11 @@ export function mapDbError(err: unknown): AppError | null {
     case '53300':
       return new AppError(503, 'DB_TOO_MANY_CONNECTIONS', 'Base de datos saturada');
   }
-  if (typeof e?.message === 'string' && e.message.includes('timeout exceeded when trying to connect')) {
+  // Pool saturado o la BD no aceptó la conexión a tiempo (falla rápido en vez de encolar sin límite): reintentable.
+  if (
+    typeof e?.message === 'string' &&
+    (e.message.includes('timeout exceeded when trying to connect') || e.message.includes('Connection terminated due to connection timeout'))
+  ) {
     return new AppError(503, 'POOL_TIMEOUT', 'Servicio saturado, reintente en unos segundos');
   }
   return null;

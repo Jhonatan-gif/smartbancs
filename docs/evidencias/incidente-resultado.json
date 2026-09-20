@@ -1,0 +1,35 @@
+﻿[
+    {
+        "Fase":  "linea-base",
+        "Tps":  120,
+        "P50ms":  5,
+        "P95ms":  7,
+        "P99ms":  10,
+        "ErroresPct":  0,
+        "Deadlocks":  0,
+        "PoolTimeouts":  0,
+        "LockTimeouts":  0
+    },
+    {
+        "Fase":  "incidente",
+        "Tps":  7,
+        "P50ms":  3563,
+        "P95ms":  4207,
+        "P99ms":  5134,
+        "ErroresPct":  94.3,
+        "Deadlocks":  137,
+        "PoolTimeouts":  4247,
+        "LockTimeouts":  2
+    },
+    {
+        "Fase":  "correccion",
+        "Tps":  120,
+        "P50ms":  5,
+        "P95ms":  7,
+        "P99ms":  11,
+        "ErroresPct":  0,
+        "Deadlocks":  0,
+        "PoolTimeouts":  0,
+        "LockTimeouts":  0
+    }
+]

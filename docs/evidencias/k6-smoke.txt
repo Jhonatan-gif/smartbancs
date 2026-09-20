@@ -1,0 +1,125 @@
+﻿
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: C:\Users\Joel Adrian\Documents\Proyecto Joel 2\smartbancs\loadtest\transfers.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 200 max VUs, 50s max duration (incl. graceful stop):
+              * transfers: Up to 20.00 iterations/s for 20s over 1 stages (maxVUs: 50-200, gracefulStop: 30s)
+
+
+running (01.0s), 000/050 VUs, 19 complete and 0 interrupted iterations
+transfers   [   5% ] 000/050 VUs  01.0s/20s  20.00 iters/s
+
+running (02.0s), 000/050 VUs, 39 complete and 0 interrupted iterations
+transfers   [  10% ] 000/050 VUs  02.0s/20s  20.00 iters/s
+
+running (03.0s), 000/050 VUs, 59 complete and 0 interrupted iterations
+transfers   [  15% ] 000/050 VUs  03.0s/20s  20.00 iters/s
+
+running (04.0s), 000/050 VUs, 79 complete and 0 interrupted iterations
+transfers   [  20% ] 000/050 VUs  04.0s/20s  20.00 iters/s
+
+running (05.0s), 000/050 VUs, 99 complete and 0 interrupted iterations
+transfers   [  25% ] 000/050 VUs  05.0s/20s  20.00 iters/s
+
+running (06.0s), 000/050 VUs, 119 complete and 0 interrupted iterations
+transfers   [  30% ] 000/050 VUs  06.0s/20s  20.00 iters/s
+
+running (07.0s), 000/050 VUs, 139 complete and 0 interrupted iterations
+transfers   [  35% ] 000/050 VUs  07.0s/20s  20.00 iters/s
+
+running (08.0s), 000/050 VUs, 159 complete and 0 interrupted iterations
+transfers   [  40% ] 000/050 VUs  08.0s/20s  20.00 iters/s
+
+running (09.0s), 000/050 VUs, 179 complete and 0 interrupted iterations
+transfers   [  45% ] 000/050 VUs  09.0s/20s  20.00 iters/s
+
+running (10.0s), 000/050 VUs, 199 complete and 0 interrupted iterations
+transfers   [  50% ] 000/050 VUs  10.0s/20s  20.00 iters/s
+
+running (11.0s), 000/050 VUs, 219 complete and 0 interrupted iterations
+transfers   [  55% ] 000/050 VUs  11.0s/20s  20.00 iters/s
+
+running (12.0s), 000/050 VUs, 239 complete and 0 interrupted iterations
+transfers   [  60% ] 000/050 VUs  12.0s/20s  20.00 iters/s
+
+running (13.0s), 000/050 VUs, 259 complete and 0 interrupted iterations
+transfers   [  65% ] 000/050 VUs  13.0s/20s  20.00 iters/s
+
+running (14.0s), 000/050 VUs, 279 complete and 0 interrupted iterations
+transfers   [  70% ] 000/050 VUs  14.0s/20s  20.00 iters/s
+
+running (15.0s), 000/050 VUs, 299 complete and 0 interrupted iterations
+transfers   [  75% ] 000/050 VUs  15.0s/20s  20.00 iters/s
+
+running (16.0s), 000/050 VUs, 319 complete and 0 interrupted iterations
+transfers   [  80% ] 000/050 VUs  16.0s/20s  20.00 iters/s
+
+running (17.0s), 000/050 VUs, 339 complete and 0 interrupted iterations
+transfers   [  85% ] 000/050 VUs  17.0s/20s  20.00 iters/s
+
+running (18.0s), 000/050 VUs, 359 complete and 0 interrupted iterations
+transfers   [  90% ] 000/050 VUs  18.0s/20s  20.00 iters/s
+
+running (19.0s), 000/050 VUs, 379 complete and 0 interrupted iterations
+transfers   [  95% ] 000/050 VUs  19.0s/20s  20.00 iters/s
+
+running (20.0s), 000/050 VUs, 399 complete and 0 interrupted iterations
+transfers   [ 100% ] 000/050 VUs  20.0s/20s  20.00 iters/s
+
+
+  █ THRESHOLDS 
+
+    checks
+    ✓ 'rate>0.99' rate=100.00%
+
+    transfer_errors
+    ✓ 'rate<0.01' rate=0.00%
+
+    transfer_latency
+    ✓ 'p(95)<2000' p(95)=11.07ms
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 417     20.849642/s
+    checks_succeeded...: 100.00% 417 out of 417
+    checks_failed......: 0.00%   0 out of 417
+
+    ✓ respuesta esperada (201 o 422)
+    ✓ repetición idempotente = 200 y mismo id
+
+    CUSTOM
+    transfer_errors................: 0.00%  0 out of 399
+    transfer_latency...............: avg=8.54ms min=5.82ms med=8.35ms p(90)=9.9ms   p(95)=11.07ms p(99)=13.79ms max=22.65ms
+    transfers_created..............: 399    19.949657/s
+    transfers_replayed.............: 18     0.899985/s
+
+    HTTP
+    http_req_duration..............: avg=8.28ms min=2.07ms med=8.29ms p(90)=9.87ms  p(95)=10.8ms  p(99)=13.73ms max=22.65ms
+      { expected_response:true }...: avg=8.28ms min=2.07ms med=8.29ms p(90)=9.87ms  p(95)=10.8ms  p(99)=13.73ms max=22.65ms
+    http_req_failed................: 0.00%  0 out of 417
+    http_reqs......................: 417    20.849642/s
+
+    EXECUTION
+    iteration_duration.............: avg=8.85ms min=5.83ms med=8.63ms p(90)=10.59ms p(95)=11.85ms p(99)=14.29ms max=23.3ms 
+    iterations.....................: 399    19.949657/s
+    vus............................: 0      min=0        max=0 
+    vus_max........................: 50     min=50       max=50
+
+    NETWORK
+    data_received..................: 193 kB 9.7 kB/s
+    data_sent......................: 117 kB 5.9 kB/s
+
+
+
+
+running (20.0s), 000/050 VUs, 399 complete and 0 interrupted iterations
+transfers ✓ [ 100% ] 000/050 VUs  20s  20.00 iters/s

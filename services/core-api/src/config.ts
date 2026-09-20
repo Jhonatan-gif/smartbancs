@@ -12,6 +12,8 @@ export const config = {
   databaseUrl:
     process.env.DATABASE_URL ?? 'postgres://smartbancs:smartbancs@localhost:5432/smartbancs',
   dbPoolMax: int(process.env.DB_POOL_MAX, 20),
+  // Conexiones que se abren al arrancar y NO se cierran por inactividad: evita crear conexiones nuevas en plena carga.
+  dbPoolMin: Math.min(int(process.env.DB_POOL_MIN, 10), int(process.env.DB_POOL_MAX, 20)),
   dbConnectTimeoutMs: int(process.env.DB_CONNECT_TIMEOUT_MS, 2000),
   // Si un bloqueo tarda más que esto, falla rápido en vez de acumular esperas.
   dbLockTimeoutMs: int(process.env.DB_LOCK_TIMEOUT_MS, 1500),

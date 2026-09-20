@@ -1,0 +1,433 @@
+﻿
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: C:\Users\Joel Adrian\Documents\Proyecto Joel 2\smartbancs\loadtest\transfers.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 3000 max VUs, 3m30s max duration (incl. graceful stop):
+              * transfers: Up to 2000.00 iterations/s for 3m0s over 6 stages (maxVUs: 500-3000, gracefulStop: 30s)
+
+
+transfers   [   1% ] 0000/0500 VUs  0m01.0s/3m0s  0103.17 iters/s
+
+transfers   [   1% ] 0001/0500 VUs  0m02.0s/3m0s  0106.51 iters/s
+
+transfers   [   2% ] 0001/0500 VUs  0m03.0s/3m0s  0109.86 iters/s
+
+transfers   [   2% ] 0001/0500 VUs  0m04.0s/3m0s  0113.18 iters/s
+
+transfers   [   3% ] 0001/0500 VUs  0m05.0s/3m0s  0116.52 iters/s
+
+transfers   [   3% ] 0001/0500 VUs  0m06.0s/3m0s  0119.85 iters/s
+
+transfers   [   4% ] 0001/0500 VUs  0m07.0s/3m0s  0123.19 iters/s
+
+transfers   [   4% ] 0000/0500 VUs  0m08.0s/3m0s  0126.50 iters/s
+
+transfers   [   5% ] 0001/0500 VUs  0m09.0s/3m0s  0129.86 iters/s
+
+transfers   [   6% ] 0001/0500 VUs  0m10.0s/3m0s  0133.18 iters/s
+
+transfers   [   6% ] 0001/0500 VUs  0m11.0s/3m0s  0136.52 iters/s
+
+transfers   [   7% ] 0001/0500 VUs  0m12.0s/3m0s  0139.85 iters/s
+
+transfers   [   7% ] 0001/0500 VUs  0m13.0s/3m0s  0143.19 iters/s
+
+transfers   [   8% ] 0001/0500 VUs  0m14.0s/3m0s  0146.50 iters/s
+
+transfers   [   8% ] 0001/0500 VUs  0m15.0s/3m0s  0149.86 iters/s
+
+transfers   [   9% ] 0001/0500 VUs  0m16.0s/3m0s  0153.18 iters/s
+
+transfers   [   9% ] 0001/0500 VUs  0m17.0s/3m0s  0156.51 iters/s
+
+transfers   [  10% ] 0001/0500 VUs  0m18.0s/3m0s  0159.84 iters/s
+
+transfers   [  11% ] 0001/0500 VUs  0m19.0s/3m0s  0163.19 iters/s
+
+transfers   [  11% ] 0000/0500 VUs  0m20.0s/3m0s  0166.50 iters/s
+
+transfers   [  12% ] 0001/0500 VUs  0m21.0s/3m0s  0169.85 iters/s
+
+transfers   [  12% ] 0001/0500 VUs  0m22.0s/3m0s  0173.18 iters/s
+
+transfers   [  13% ] 0001/0500 VUs  0m23.0s/3m0s  0176.51 iters/s
+
+transfers   [  13% ] 0001/0500 VUs  0m24.0s/3m0s  0179.84 iters/s
+
+transfers   [  14% ] 0001/0500 VUs  0m25.0s/3m0s  0183.18 iters/s
+
+transfers   [  14% ] 0001/0500 VUs  0m26.0s/3m0s  0186.52 iters/s
+
+transfers   [  15% ] 0001/0500 VUs  0m27.0s/3m0s  0189.85 iters/s
+
+transfers   [  16% ] 0001/0500 VUs  0m28.0s/3m0s  0193.18 iters/s
+
+transfers   [  16% ] 0001/0500 VUs  0m29.0s/3m0s  0196.51 iters/s
+
+transfers   [  17% ] 0002/0500 VUs  0m30.0s/3m0s  0199.84 iters/s
+
+transfers   [  17% ] 0001/0500 VUs  0m31.0s/3m0s  0206.35 iters/s
+
+transfers   [  18% ] 0001/0500 VUs  0m32.0s/3m0s  0213.03 iters/s
+
+transfers   [  18% ] 0001/0500 VUs  0m33.0s/3m0s  0219.68 iters/s
+
+transfers   [  19% ] 0002/0500 VUs  0m34.0s/3m0s  0226.38 iters/s
+
+transfers   [  19% ] 0001/0500 VUs  0m35.0s/3m0s  0233.02 iters/s
+
+transfers   [  20% ] 0002/0500 VUs  0m36.0s/3m0s  0239.71 iters/s
+
+transfers   [  21% ] 0002/0500 VUs  0m37.0s/3m0s  0246.37 iters/s
+
+transfers   [  21% ] 0001/0500 VUs  0m38.0s/3m0s  0253.02 iters/s
+
+transfers   [  22% ] 0002/0500 VUs  0m39.0s/3m0s  0259.70 iters/s
+
+transfers   [  22% ] 0002/0500 VUs  0m40.0s/3m0s  0266.37 iters/s
+
+transfers   [  23% ] 0001/0500 VUs  0m41.0s/3m0s  0273.02 iters/s
+
+transfers   [  23% ] 0002/0500 VUs  0m42.0s/3m0s  0279.70 iters/s
+
+transfers   [  24% ] 0002/0500 VUs  0m43.0s/3m0s  0286.37 iters/s
+
+transfers   [  24% ] 0001/0500 VUs  0m44.0s/3m0s  0293.02 iters/s
+
+transfers   [  25% ] 0002/0500 VUs  0m45.0s/3m0s  0299.70 iters/s
+
+transfers   [  26% ] 0002/0500 VUs  0m46.0s/3m0s  0306.37 iters/s
+
+transfers   [  26% ] 0003/0500 VUs  0m47.0s/3m0s  0313.04 iters/s
+
+transfers   [  27% ] 0002/0500 VUs  0m48.0s/3m0s  0319.70 iters/s
+
+transfers   [  27% ] 0003/0500 VUs  0m49.0s/3m0s  0326.36 iters/s
+
+transfers   [  28% ] 0001/0500 VUs  0m50.0s/3m0s  0333.02 iters/s
+
+transfers   [  28% ] 0002/0500 VUs  0m51.0s/3m0s  0339.70 iters/s
+
+transfers   [  29% ] 0002/0500 VUs  0m52.0s/3m0s  0346.36 iters/s
+
+transfers   [  29% ] 0003/0500 VUs  0m53.0s/3m0s  0353.03 iters/s
+
+transfers   [  30% ] 0002/0500 VUs  0m54.0s/3m0s  0359.69 iters/s
+
+transfers   [  31% ] 0002/0500 VUs  0m55.0s/3m0s  0366.36 iters/s
+
+transfers   [  31% ] 0003/0500 VUs  0m56.0s/3m0s  0373.03 iters/s
+
+transfers   [  32% ] 0002/0500 VUs  0m57.0s/3m0s  0379.69 iters/s
+
+transfers   [  32% ] 0002/0500 VUs  0m58.0s/3m0s  0386.36 iters/s
+
+transfers   [  33% ] 0004/0500 VUs  0m59.0s/3m0s  0393.03 iters/s
+
+transfers   [  33% ] 0008/0500 VUs  1m00.0s/3m0s  0399.69 iters/s
+
+transfers   [  34% ] 0008/0500 VUs  1m01.0s/3m0s  0412.71 iters/s
+
+transfers   [  34% ] 0003/0500 VUs  1m02.0s/3m0s  0426.07 iters/s
+
+transfers   [  35% ] 0004/0500 VUs  1m03.0s/3m0s  0439.38 iters/s
+
+transfers   [  36% ] 0004/0500 VUs  1m04.0s/3m0s  0452.74 iters/s
+
+transfers   [  36% ] 0008/0500 VUs  1m05.0s/3m0s  0466.06 iters/s
+
+transfers   [  37% ] 0006/0500 VUs  1m06.0s/3m0s  0479.37 iters/s
+
+transfers   [  37% ] 0005/0500 VUs  1m07.0s/3m0s  0492.71 iters/s
+
+transfers   [  38% ] 0004/0500 VUs  1m08.0s/3m0s  0506.06 iters/s
+
+transfers   [  38% ] 0005/0500 VUs  1m09.0s/3m0s  0519.40 iters/s
+
+transfers   [  39% ] 0014/0500 VUs  1m10.0s/3m0s  0532.73 iters/s
+
+transfers   [  39% ] 0014/0500 VUs  1m11.0s/3m0s  0546.05 iters/s
+
+transfers   [  40% ] 0014/0500 VUs  1m12.0s/3m0s  0559.39 iters/s
+
+transfers   [  41% ] 0017/0500 VUs  1m13.0s/3m0s  0572.72 iters/s
+
+transfers   [  41% ] 0009/0500 VUs  1m14.0s/3m0s  0586.05 iters/s
+
+transfers   [  42% ] 0050/0500 VUs  1m15.0s/3m0s  0599.39 iters/s
+
+transfers   [  42% ] 0048/0500 VUs  1m16.0s/3m0s  0612.72 iters/s
+
+transfers   [  43% ] 0106/0500 VUs  1m17.0s/3m0s  0626.05 iters/s
+
+transfers   [  43% ] 0192/0500 VUs  1m18.0s/3m0s  0639.38 iters/s
+
+transfers   [  44% ] 0295/0500 VUs  1m19.0s/3m0s  0652.72 iters/s
+
+transfers   [  44% ] 0429/0500 VUs  1m20.0s/3m0s  0666.06 iters/s
+
+transfers   [  45% ] 0519/0520 VUs  1m21.0s/3m0s  0679.40 iters/s
+
+transfers   [  46% ] 0595/0597 VUs  1m22.0s/3m0s  0692.71 iters/s
+
+transfers   [  46% ] 0676/0679 VUs  1m23.0s/3m0s  0706.06 iters/s
+
+transfers   [  47% ] 0758/0758 VUs  1m24.0s/3m0s  0719.40 iters/s
+
+transfers   [  47% ] 0857/0857 VUs  1m25.0s/3m0s  0732.73 iters/s
+
+transfers   [  48% ] 0976/0977 VUs  1m26.0s/3m0s  0746.06 iters/s
+
+transfers   [  48% ] 1095/1095 VUs  1m27.0s/3m0s  0759.39 iters/s
+
+transfers   [  49% ] 1213/1214 VUs  1m28.0s/3m0s  0772.71 iters/s
+
+transfers   [  49% ] 1343/1344 VUs  1m29.0s/3m0s  0786.05 iters/s
+
+transfers   [  50% ] 1519/1520 VUs  1m30.0s/3m0s  0799.39 iters/s
+
+transfers   [  51% ] 1700/1702 VUs  1m31.0s/3m0s  0812.72 iters/s
+
+transfers   [  51% ] 1907/1908 VUs  1m32.0s/3m0s  0826.07 iters/s
+
+transfers   [  52% ] 2097/2097 VUs  1m33.0s/3m0s  0839.39 iters/s
+
+transfers   [  52% ] 2286/2287 VUs  1m34.0s/3m0s  0852.72 iters/s
+
+transfers   [  53% ] 2475/2476 VUs  1m35.0s/3m0s  0866.05 iters/s
+
+transfers   [  53% ] 2556/2589 VUs  1m36.0s/3m0s  0879.40 iters/s
+
+transfers   [  54% ] 2638/2651 VUs  1m37.0s/3m0s  0892.72 iters/s
+
+transfers   [  54% ] 2720/2721 VUs  1m38.0s/3m0s  0906.06 iters/s
+
+transfers   [  55% ] 2884/2885 VUs  1m39.0s/3m0s  0919.40 iters/s
+
+transfers   [  56% ] 2812/2938 VUs  1m40.0s/3m0s  0932.72 iters/s
+
+transfers   [  56% ] 2783/2938 VUs  1m41.0s/3m0s  0946.06 iters/s
+time="2026-09-19T18:19:44-05:00" level=warning msg="Insufficient VUs, reached 3000 active VUs and cannot initialize more" executor=ramping-arrival-rate scenario=transfers
+
+transfers   [  57% ] 3000/3000 VUs  1m42.0s/3m0s  0959.40 iters/s
+
+transfers   [  57% ] 3000/3000 VUs  1m43.0s/3m0s  0972.73 iters/s
+
+transfers   [  58% ] 2826/3000 VUs  1m44.0s/3m0s  0986.06 iters/s
+
+transfers   [  58% ] 2603/3000 VUs  1m45.0s/3m0s  0999.39 iters/s
+
+transfers   [  59% ] 2927/3000 VUs  1m46.0s/3m0s  1012.73 iters/s
+
+transfers   [  59% ] 2999/3000 VUs  1m47.0s/3m0s  1026.05 iters/s
+
+transfers   [  60% ] 2948/3000 VUs  1m48.0s/3m0s  1039.39 iters/s
+
+transfers   [  61% ] 2365/3000 VUs  1m49.0s/3m0s  1052.72 iters/s
+
+transfers   [  61% ] 2686/3000 VUs  1m50.0s/3m0s  1066.07 iters/s
+
+transfers   [  62% ] 2998/3000 VUs  1m51.0s/3m0s  1079.39 iters/s
+
+transfers   [  62% ] 3000/3000 VUs  1m52.0s/3m0s  1092.72 iters/s
+
+transfers   [  63% ] 2143/3000 VUs  1m53.0s/3m0s  1106.05 iters/s
+
+transfers   [  63% ] 2719/3000 VUs  1m54.0s/3m0s  1119.39 iters/s
+
+transfers   [  64% ] 3000/3000 VUs  1m55.0s/3m0s  1132.73 iters/s
+
+transfers   [  64% ] 3000/3000 VUs  1m56.0s/3m0s  1146.06 iters/s
+
+transfers   [  65% ] 2361/3000 VUs  1m57.0s/3m0s  1159.40 iters/s
+
+transfers   [  66% ] 2889/3000 VUs  1m58.0s/3m0s  1172.72 iters/s
+
+transfers   [  66% ] 3000/3000 VUs  1m59.0s/3m0s  1186.06 iters/s
+
+transfers   [  67% ] 3000/3000 VUs  2m00.0s/3m0s  1199.39 iters/s
+
+transfers   [  67% ] 2328/3000 VUs  2m01.0s/3m0s  1212.73 iters/s
+
+transfers   [  68% ] 2825/3000 VUs  2m02.0s/3m0s  1226.06 iters/s
+
+transfers   [  68% ] 3000/3000 VUs  2m03.0s/3m0s  1239.39 iters/s
+
+transfers   [  69% ] 3000/3000 VUs  2m04.0s/3m0s  1252.72 iters/s
+
+transfers   [  69% ] 2293/3000 VUs  2m05.0s/3m0s  1266.05 iters/s
+
+transfers   [  70% ] 3000/3000 VUs  2m06.0s/3m0s  1279.39 iters/s
+
+transfers   [  71% ] 3000/3000 VUs  2m07.0s/3m0s  1292.71 iters/s
+
+transfers   [  71% ] 2660/3000 VUs  2m08.0s/3m0s  1306.06 iters/s
+
+transfers   [  72% ] 2605/3000 VUs  2m09.0s/3m0s  1319.39 iters/s
+
+transfers   [  72% ] 3000/3000 VUs  2m10.0s/3m0s  1332.72 iters/s
+
+transfers   [  73% ] 3000/3000 VUs  2m11.0s/3m0s  1346.06 iters/s
+
+transfers   [  73% ] 2771/3000 VUs  2m12.0s/3m0s  1359.39 iters/s
+
+transfers   [  74% ] 2377/3000 VUs  2m13.0s/3m0s  1372.71 iters/s
+
+transfers   [  74% ] 3000/3000 VUs  2m14.0s/3m0s  1386.06 iters/s
+
+transfers   [  75% ] 3000/3000 VUs  2m15.0s/3m0s  1399.39 iters/s
+
+transfers   [  76% ] 2250/3000 VUs  2m16.0s/3m0s  1412.73 iters/s
+
+transfers   [  76% ] 3000/3000 VUs  2m17.0s/3m0s  1426.06 iters/s
+
+transfers   [  77% ] 3000/3000 VUs  2m18.0s/3m0s  1439.39 iters/s
+
+transfers   [  77% ] 3000/3000 VUs  2m19.0s/3m0s  1452.73 iters/s
+
+transfers   [  78% ] 2510/3000 VUs  2m20.0s/3m0s  1466.06 iters/s
+
+transfers   [  78% ] 3000/3000 VUs  2m21.0s/3m0s  1479.39 iters/s
+
+transfers   [  79% ] 3000/3000 VUs  2m22.0s/3m0s  1492.72 iters/s
+
+transfers   [  79% ] 3000/3000 VUs  2m23.0s/3m0s  1506.05 iters/s
+
+transfers   [  80% ] 2274/3000 VUs  2m24.0s/3m0s  1519.40 iters/s
+
+transfers   [  81% ] 3000/3000 VUs  2m25.0s/3m0s  1532.72 iters/s
+
+transfers   [  81% ] 3000/3000 VUs  2m26.0s/3m0s  1546.05 iters/s
+
+transfers   [  82% ] 2315/3000 VUs  2m27.0s/3m0s  1559.39 iters/s
+
+transfers   [  82% ] 2999/3000 VUs  2m28.0s/3m0s  1572.72 iters/s
+
+transfers   [  83% ] 2999/3000 VUs  2m29.0s/3m0s  1586.06 iters/s
+
+transfers   [  83% ] 3000/3000 VUs  2m30.0s/3m0s  1599.39 iters/s
+
+transfers   [  84% ] 2532/3000 VUs  2m31.0s/3m0s  1612.72 iters/s
+
+transfers   [  84% ] 3000/3000 VUs  2m32.0s/3m0s  1626.06 iters/s
+
+transfers   [  85% ] 3000/3000 VUs  2m33.0s/3m0s  1639.39 iters/s
+
+transfers   [  86% ] 3000/3000 VUs  2m34.0s/3m0s  1652.73 iters/s
+
+transfers   [  86% ] 2452/3000 VUs  2m35.0s/3m0s  1666.06 iters/s
+
+transfers   [  87% ] 3000/3000 VUs  2m36.0s/3m0s  1679.39 iters/s
+
+transfers   [  87% ] 3000/3000 VUs  2m37.0s/3m0s  1692.72 iters/s
+
+transfers   [  88% ] 2379/3000 VUs  2m38.0s/3m0s  1706.06 iters/s
+
+transfers   [  88% ] 2999/3000 VUs  2m39.0s/3m0s  1719.39 iters/s
+
+transfers   [  89% ] 3000/3000 VUs  2m40.0s/3m0s  1732.72 iters/s
+
+transfers   [  89% ] 3000/3000 VUs  2m41.0s/3m0s  1746.06 iters/s
+
+transfers   [  90% ] 2563/3000 VUs  2m42.0s/3m0s  1759.39 iters/s
+
+transfers   [  91% ] 2998/3000 VUs  2m43.0s/3m0s  1772.72 iters/s
+
+transfers   [  91% ] 3000/3000 VUs  2m44.0s/3m0s  1786.06 iters/s
+
+transfers   [  92% ] 2495/3000 VUs  2m45.0s/3m0s  1799.40 iters/s
+
+transfers   [  92% ] 3000/3000 VUs  2m46.0s/3m0s  1812.72 iters/s
+
+transfers   [  93% ] 3000/3000 VUs  2m47.0s/3m0s  1826.05 iters/s
+
+transfers   [  93% ] 2987/3000 VUs  2m48.0s/3m0s  1839.40 iters/s
+
+transfers   [  94% ] 2811/3000 VUs  2m49.0s/3m0s  1852.72 iters/s
+
+transfers   [  94% ] 3000/3000 VUs  2m50.0s/3m0s  1866.06 iters/s
+
+transfers   [  95% ] 2999/3000 VUs  2m51.0s/3m0s  1879.38 iters/s
+
+transfers   [  96% ] 2409/3000 VUs  2m52.0s/3m0s  1892.72 iters/s
+
+transfers   [  96% ] 3000/3000 VUs  2m53.0s/3m0s  1906.07 iters/s
+
+transfers   [  97% ] 3000/3000 VUs  2m54.0s/3m0s  1919.39 iters/s
+
+transfers   [  97% ] 2798/3000 VUs  2m55.0s/3m0s  1932.72 iters/s
+
+transfers   [  98% ] 2999/3000 VUs  2m56.0s/3m0s  1946.05 iters/s
+
+transfers   [  98% ] 3000/3000 VUs  2m57.0s/3m0s  1959.39 iters/s
+
+transfers   [  99% ] 3000/3000 VUs  2m58.0s/3m0s  1972.72 iters/s
+
+transfers   [  99% ] 2355/3000 VUs  2m59.0s/3m0s  1986.05 iters/s
+
+transfers   [ 100% ] 3000/3000 VUs  3m00.0s/3m0s  1999.39 iters/s
+
+transfers ↓ [ 100% ] 3000/3000 VUs  3m0s  1999.90 iters/s
+
+transfers ↓ [ 100% ] 3000/3000 VUs  3m0s  1999.90 iters/s
+
+
+  █ THRESHOLDS 
+
+    checks
+    ✗ 'rate>0.99' rate=59.67%
+
+    transfer_errors
+    ✗ 'rate<0.01' rate=41.15%
+
+    transfer_latency
+    ✗ 'p(95)<2000' p(95)=3.91s
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 112024 613.275638/s
+    checks_succeeded...: 59.67% 66847 out of 112024
+    checks_failed......: 40.32% 45177 out of 112024
+
+    ✗ respuesta esperada (201 o 422)
+      ↳  58% — ✓ 64011 / ✗ 44776
+    ✗ repetición idempotente = 200 y mismo id
+      ↳  87% — ✓ 2836 / ✗ 401
+
+    CUSTOM
+    transfer_errors................: 41.15% 44776 out of 108787
+    transfer_latency...............: avg=2.4s  min=3.51ms med=3.07s p(90)=3.62s p(95)=3.91s p(99)=4.01s max=4.1s 
+    transfers_created..............: 64011  350.428362/s
+    transfers_replayed.............: 3237   17.720964/s
+
+    HTTP
+    http_req_duration..............: avg=2.36s min=1.04ms med=3.05s p(90)=3.61s p(95)=3.91s p(99)=4.01s max=4.1s 
+      { expected_response:true }...: avg=1.91s min=1.04ms med=2.85s p(90)=3.65s p(95)=3.92s p(99)=4.02s max=4.1s 
+    http_req_failed................: 40.32% 45177 out of 112024
+    http_reqs......................: 112024 613.275638/s
+
+    EXECUTION
+    dropped_iterations.............: 48698  266.59731/s
+    iteration_duration.............: avg=2.43s min=3.51ms med=3.07s p(90)=3.68s p(95)=3.96s p(99)=4.91s max=6.05s
+    iterations.....................: 108787 595.554674/s
+    vus............................: 822    min=0               max=3000
+    vus_max........................: 3000   min=500             max=3000
+
+    NETWORK
+    data_received..................: 48 MB  262 kB/s
+    data_sent......................: 32 MB  173 kB/s
+
+
+
+
+transfers ✓ [ 100% ] 0000/3000 VUs  3m0s  1999.90 iters/s
+time="2026-09-19T18:21:06-05:00" level=error msg="thresholds on metrics 'checks, transfer_errors, transfer_latency' have been crossed"

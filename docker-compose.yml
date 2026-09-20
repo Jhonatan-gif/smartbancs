@@ -44,6 +44,7 @@ services:
       LOCK_ORDERING: ${LOCK_ORDERING:-on}
       SIMULATED_LOCK_DELAY_MS: ${SIMULATED_LOCK_DELAY_MS:-0}
       DB_POOL_MAX: ${DB_POOL_MAX:-20}
+      DB_POOL_MIN: ${DB_POOL_MIN:-10}
       LOG_LEVEL: ${LOG_LEVEL:-info}
       # El ai-service es OPCIONAL para core-api: no hay depends_on. Si cae, /recommendations responde el fallback.
       AI_SERVICE_URL: http://ai-service:8000

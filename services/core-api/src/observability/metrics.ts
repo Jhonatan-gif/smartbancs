@@ -124,7 +124,12 @@ for (const outcome of ['ok', 'timeout', 'unavailable', 'circuit_open', 'bad_resp
 export function pgErrorType(err: unknown): string {
   const e = err as { code?: string; message?: string };
   if (e?.code && PG_ERROR_TYPES[e.code]) return PG_ERROR_TYPES[e.code];
-  if (typeof e?.message === 'string' && e.message.includes('timeout exceeded when trying to connect')) return 'pool_timeout';
+  if (
+    typeof e?.message === 'string' &&
+    (e.message.includes('timeout exceeded when trying to connect') || e.message.includes('Connection terminated due to connection timeout'))
+  ) {
+    return 'pool_timeout';
+  }
   return 'other';
 }
 

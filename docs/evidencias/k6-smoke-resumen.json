@@ -1,0 +1,17 @@
+﻿{
+    "escenario":  "smoke",
+    "fecha":  "2026-09-19T18:08:14",
+    "duracion_s":  21,
+    "k6_exit":  0,
+    "requests":  417,
+    "req_por_s":  20.8,
+    "p50_ms":  8.4,
+    "p95_ms":  11.1,
+    "p99_ms":  13.8,
+    "errores_pct":  0,
+    "iteraciones_no_lanzadas":  0,
+    "creadas":  399,
+    "repeticiones":  18,
+    "pendientes_bancs":  0,
+    "sync_por_s":  0
+}
