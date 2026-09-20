@@ -31,6 +31,6 @@ en formatos distintos, duplicados y cuentas erróneas. El resultado alimenta al 
 6. **Datos de prueba reproducibles:** generador con semilla fija (`--seed 42`) que inyecta nulos, formatos mixtos, duplicados, cuentas inválidas, montos negativos, outliers y fechas futuras. Se versiona una muestra de 2.000 filas.
 
 ## Consecuencias
-- **Bueno:** trazabilidad total de rechazos, dinero sin errores de coma flotante, salida lista para el ai-service y 46 casos de prueba.
+- **Bueno:** trazabilidad total de rechazos, dinero sin errores de coma flotante, salida lista para el ai-service y 54 casos de prueba.
 - **Costo aceptado:** procesamiento en memoria y en un solo proceso. Con la muestra (2.000 filas) tarda menos de 1 s; **no se ha medido con volúmenes grandes**.
 - **Producción:** particionar el Parquet por fecha en almacenamiento de objetos, procesar por lotes o por ventanas (Polars o Spark si el volumen lo exige), orquestar con un planificador (Airflow o cron) y publicar el reporte de calidad como métrica para vigilar el data drift.

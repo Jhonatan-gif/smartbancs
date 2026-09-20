@@ -133,6 +133,11 @@ function Invoke-VitestSuite([string]$Servicio, [string[]]$Archivos = @()) {
     Push-Location $dir
     try {
         if (-not (Test-Path 'node_modules')) { Invoke-Native -Exe 'npm' -Arguments @('ci') | Out-Null }
+        # Las pruebas de integracion del worker importan el codigo de bancs-mock: hacen falta SUS dependencias (clon limpio)
+        if ($Servicio -eq 'worker') {
+            $mock = Join-Path $script:RepoRoot 'servicesancs-mock'
+            if (-not (Test-Path (Join-Path $mock 'node_modules'))) { Push-Location $mock; Invoke-Native -Exe 'npm' -Arguments @('ci') | Out-Null; Pop-Location }
+        }
         $env:DATABASE_URL = Get-DatabaseUrl
         return Invoke-Native -Exe 'npm' -Arguments (@('test', '--') + $Archivos)
     } finally { Pop-Location }

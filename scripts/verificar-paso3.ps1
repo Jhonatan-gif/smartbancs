@@ -142,7 +142,7 @@ if (-not $SinTests) {
     if ($py.ExitCode -ne 0) { Write-Host $py.Output }
 
     $etl = Invoke-Native -Exe 'docker' -Arguments @('compose', 'run', '--rm', 'etl', 'python', '-m', 'pytest', '-q')
-    Check '46 tests del ETL pasan' ($etl.ExitCode -eq 0 -and $etl.Output -match '46 passed') (($etl.Output -split "`n" | Select-Object -Last 1))
+    Check '54 tests del ETL pasan' ($etl.ExitCode -eq 0 -and $etl.Output -match '54 passed') (($etl.Output -split "`n" | Select-Object -Last 1))
 } else {
     Write-Host ''; Write-Host '  (tests omitidos con -SinTests)' -ForegroundColor Yellow
 }
