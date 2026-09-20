@@ -90,9 +90,12 @@ export function registerGauges(deps: {
     registers: [registry],
     async collect() {
       await safe('sync_unsynced_transactions', async () => {
+        // Solo transferencias que generaron un evento en el outbox (las filas insertadas fuera de la API no deben contar como retraso)
         const { rows } = await pool.query(
-          `SELECT count(*)::int AS n FROM transactions t
-            WHERE NOT EXISTS (SELECT 1 FROM bancs_sync s WHERE s.transaction_id = t.id AND s.status = 'SYNCED')`,
+          `SELECT count(*)::int AS n FROM outbox_events o
+            WHERE o.event_type = $1
+              AND NOT EXISTS (SELECT 1 FROM bancs_sync s WHERE s.transaction_id = o.aggregate_id AND s.status = 'SYNCED')`,
+          [cfg.eventType],
         );
         this.set(rows[0].n);
       });

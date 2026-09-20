@@ -84,7 +84,7 @@ Write-Host ("  Errores (5xx/409/sin respuesta): {0} %" -f [math]::Round($m.trans
 if ($m.dropped_iterations) { Write-Host ("  Iteraciones que k6 NO pudo lanzar (el sistema no dio abasto): {0}" -f $m.dropped_iterations.count) }
 
 Titulo 'Sincronizacion con Bancs tras la carga (el legado no es el cuello de botella de la API)'
-$pend = [int](Get-SqlValue "SELECT count(*) FROM transactions t WHERE NOT EXISTS (SELECT 1 FROM bancs_sync s WHERE s.transaction_id = t.id AND s.status = 'SYNCED');")
+$pend = [int](Get-SqlValue "SELECT count(*) FROM transactions t WHERE EXISTS (SELECT 1 FROM outbox_events o WHERE o.aggregate_id = t.id) AND NOT EXISTS (SELECT 1 FROM bancs_sync s WHERE s.transaction_id = t.id AND s.status = 'SYNCED');")
 $t0 = Get-Date; $sync0 = [int](Get-SqlValue "SELECT count(*) FROM bancs_sync WHERE status = 'SYNCED';")
 Start-Sleep -Seconds 20
 $sync1 = [int](Get-SqlValue "SELECT count(*) FROM bancs_sync WHERE status = 'SYNCED';")

@@ -56,7 +56,7 @@ try {
 
     Titulo 'Preparacion'
     Invoke-Api POST "$Bancs/bancs/admin/outage" -Body @{ down = $false } | Out-Null
-    $drenado = Wait-Until { [int](Get-SqlValue "SELECT count(*) FROM transactions t WHERE NOT EXISTS (SELECT 1 FROM bancs_sync s WHERE s.transaction_id = t.id AND s.status = 'SYNCED');") -eq 0 } 90
+    $drenado = Wait-Until { [int](Get-SqlValue "SELECT count(*) FROM transactions t WHERE EXISTS (SELECT 1 FROM outbox_events o WHERE o.aggregate_id = t.id) AND NOT EXISTS (SELECT 1 FROM bancs_sync s WHERE s.transaction_id = t.id AND s.status = 'SYNCED');") -eq 0 } 90
     Check 'No quedan transferencias previas pendientes de sincronizar' $drenado
     Check 'Contadores de Bancs puestos a cero (reset)' (Reset-Bancs)
 
