@@ -11,6 +11,11 @@ Las cifras de rendimiento son de un **único portátil** (Windows + Docker Deskt
 | `estados-cuenta-verificacion.txt` | `scripts\verificar-estados-cuenta.ps1` | 26/26: CSV y PDF cuadran con el ledger |
 | `incidente-salida.txt` | `scripts\simulate-incident.ps1` | 10/10: incidente reproducido, corregido y dinero conservado |
 
+## Prueba en clon limpio
+| Archivo | Contenido |
+|---|---|
+| `clon-limpio.md` | Repositorio clonado en una carpeta nueva, levantado desde cero y verificado (resultados, fallos que encontró y cómo se corrigieron) |
+
 ## Simulación del incidente (3.5)
 | Archivo | Contenido |
 |---|---|
