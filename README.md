@@ -96,6 +96,15 @@ Resultado sobre la muestra versionada: [`docs/evidencias/etl-reporte-calidad.md`
 Sin Docker: `cd etl; python -m venv .venv; .venv\Scripts\pip install -r requirements.txt; .venv\Scripts\python -m smartbancs_etl.pipeline`.
 Decisiones: [ADR-0003](docs/adr/0003-etl-limpieza-y-features.md).
 
+## Estados de cuenta (CSV y PDF)
+```powershell
+# Estado de un mes (UTC). Se descarga como archivo; -OutFile lo guarda.
+Invoke-WebRequest "http://localhost:3000/v1/accounts/1000000016/statements?month=2026-09&format=csv" -OutFile estado.csv
+Invoke-WebRequest "http://localhost:3000/v1/accounts/1000000016/statements?month=2026-09&format=pdf" -OutFile estado.pdf
+```
+Trae saldo inicial, total de créditos y débitos, saldo final y el detalle. Todo se calcula desde el ledger con `NUMERIC` en una transacción de solo lectura, así que **cuadra exactamente**
+con los movimientos y el saldo. Verificación: `scriptserificar-estados-cuenta.ps1`. Decisión y límites (sin autenticación en este MVP): [ADR-0007](docs/adr/0007-estados-de-cuenta.md).
+
 ## Recomendaciones de IA (asíncronas, con fallback)
 `ai-service` (FastAPI, puerto 8000) lee el stream de transferencias con su propio grupo (`ai-recs`) y genera
 recomendaciones por cuenta (reglas + modelo estadístico simple sobre las features del ETL). Las transferencias **nunca**
@@ -125,7 +134,8 @@ docker compose --profile obs up -d --build
 
 ## Pruebas de carga e incidente simulado
 ```powershell
-powershell -ExecutionPolicy Bypass -File scriptsun-loadtest.ps1 -Scenario smoke     # smoke | load | ramp | hot | fixed -Rate 500
+powershell -ExecutionPolicy Bypass -File scripts
+un-loadtest.ps1 -Scenario smoke     # smoke | load | ramp | hot | fixed -Rate 500
 powershell -ExecutionPolicy Bypass -File scriptsind-limit.ps1 -Rates "400,600,800"  # escalones de tasa fija + CPU de cada contenedor
 powershell -ExecutionPolicy Bypass -File scripts\simulate-incident.ps1                # deadlocks + agotamiento del pool: base -> incidente -> corrección
 # Varias réplicas de core-api detrás de nginx:
@@ -168,6 +178,7 @@ docker compose down -v     # borra también los datos (vuelve a cargar el esquem
 | POST | `/v1/transfers` | Transferencia entre cuentas (idempotente) |
 | GET | `/v1/accounts/{accountNumber}` | Datos y saldo de la cuenta |
 | GET | `/v1/accounts/{accountNumber}/movements` | Movimientos paginados |
+| GET | `/v1/accounts/{accountNumber}/statements?month=YYYY-MM&format=csv\|pdf` | Estado de cuenta descargable (saldo inicial, créditos, débitos, saldo final y detalle) |
 | GET | `/v1/accounts/{accountNumber}/recommendations` | Recomendaciones de IA (con fallback si la IA no responde) |
 | GET | `/health` | Estado del servicio y la base de datos |
 | GET | `:4000/bancs/stats` | (Bancs simulado) estadísticas de las llamadas recibidas |

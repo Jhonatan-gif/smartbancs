@@ -133,8 +133,8 @@ finally {
 if (-not $SinTests) {
     Titulo 'Pruebas automaticas'
     $t = Invoke-VitestSuite 'core-api'
-    $ok = ($t.ExitCode -eq 0) -and ($t.Output -match 'Tests\s+25 passed') -and ($t.Output -notmatch '\d+ failed')
-    Check '25 tests de core-api pasan (transferencias, IA, metricas, privacidad)' $ok (($t.Output -split "`n" | Where-Object { $_ -match '^\s*Tests\s' }) -join ' ')
+    $ok = ($t.ExitCode -eq 0) -and ($t.Output -match 'Tests\s+40 passed') -and ($t.Output -notmatch '\d+ failed')
+    Check '40 tests de core-api pasan (transferencias, IA, metricas, privacidad, estados de cuenta)' $ok (($t.Output -split "`n" | Where-Object { $_ -match '^\s*Tests\s' }) -join ' ')
     if (-not $ok) { Write-Host $t.Output }
 
     $py = Invoke-Native -Exe 'docker' -Arguments @('compose', 'exec', '-T', 'ai-service', 'python', '-m', 'pytest', '-q')

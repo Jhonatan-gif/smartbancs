@@ -10,6 +10,7 @@ import { accountRoutes } from './modules/accounts/accounts.routes';
 import { transferRoutes } from './modules/transfers/transfer.routes';
 import { AiClient } from './modules/recommendations/ai-client';
 import { recommendationRoutes } from './modules/recommendations/recommendations.routes';
+import { statementRoutes } from './modules/statements/statements.routes';
 
 export function buildApp(opts: { aiClient?: AiClient } = {}) {
   const app = Fastify({
@@ -86,6 +87,7 @@ export function buildApp(opts: { aiClient?: AiClient } = {}) {
 
   app.register(transferRoutes, { prefix: '/v1' });
   app.register(accountRoutes, { prefix: '/v1' });
+  app.register(statementRoutes, { prefix: '/v1' });
   app.register(recommendationRoutes, {
     prefix: '/v1',
     aiClient:

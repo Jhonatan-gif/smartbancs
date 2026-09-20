@@ -1,0 +1,54 @@
+﻿
+== Preparacion: transferencias de distinto monto (con comas y comillas en la descripcion)
+  [PASS] Transferencia 1 de 12.34 = 201
+         HTTP 201
+  [PASS] Transferencia 2 de 7.66 = 201
+         HTTP 201
+  [PASS] Transferencia 3 de 100.00 = 201
+         HTTP 201
+  [PASS] Transferencia 4 de 0.99 = 201
+         HTTP 201
+  [PASS] Transferencia 5 de 250.10 = 201
+         HTTP 201
+
+== CSV del mes actual
+  [PASS] GET statements CSV = 200 con text/csv
+         Content-Type=text/csv; charset=utf-8
+  [PASS] Se descarga como adjunto con la cuenta enmascarada en el nombre (nunca completa)
+         attachment; filename="estado-cuenta-xxxxxx0016-2026-09.csv"
+  [PASS] Cache-Control: no-store (datos financieros)
+  [PASS] Saldo inicial + creditos - debitos = saldo final
+         5000.00 + 8.65 - 382.44 = 4626.21 (declarado: 4626.21)
+  [PASS] Mes actual: el saldo final = saldo actual de la cuenta
+         final=4626.21 actual=4626.21
+  [PASS] El numero de filas del detalle = "Movimientos" del resumen
+         filas=7 resumen=7
+  [PASS] La suma del detalle coincide con los totales (creditos y debitos)
+         detalle: creditos=8.65 debitos=382.44
+  [PASS] El saldo de la ultima fila = saldo final
+         ultima fila=4626.21
+  [PASS] Los totales coinciden con los calculados directamente sobre el ledger (SQL independiente)
+         ledger: creditos=8.65 debitos=382.44 movimientos=7
+  [PASS] La descripcion con comas y comillas quedo escapada (RFC 4180)
+  [PASS] La contraparte sale enmascarada y no aparece la cuenta completa de terceros
+
+== PDF
+  [PASS] PDF: 200 con application/pdf
+  [PASS] PDF: empieza con %PDF y termina con %%EOF
+  [PASS] PDF: trae los mismos saldos que el CSV
+  [PASS] PDF: lo abre un lector de terceros (pypdf) y el texto contiene el saldo final
+         paginas=1
+
+== Validaciones
+  [PASS] Sin month = 400
+  [PASS] Mes invalido (2026-13) = 400
+  [PASS] Formato desconocido = 400
+  [PASS] Cuenta inexistente = 404
+  [PASS] Mes anterior sin movimientos: saldo inicial = final y totales en cero
+         inicial=5000.00 final=5000.00
+
+== Pruebas automaticas
+  [PASS] 15 tests de estados de cuenta pasan (bordes de mes, invariantes, ledger, CSV, PDF, limites)
+               Tests  15 passed (15)
+
+ESTADOS DE CUENTA : 26/26 chequeos OK, 0 fallos

@@ -238,8 +238,8 @@ if (-not $SinDeadlock) {
 if (-not $SinTests) {
     Titulo 'Pruebas automaticas'
     $t = Invoke-VitestSuite 'core-api'
-    $ok = ($t.ExitCode -eq 0) -and ($t.Output -match 'Tests\s+25 passed') -and ($t.Output -notmatch '\d+ failed')
-    Check '25 tests de core-api pasan (transferencias, IA, metricas, diagnostico y privacidad)' $ok (($t.Output -split "`n" | Where-Object { $_ -match '^\s*Tests\s' }) -join ' ')
+    $ok = ($t.ExitCode -eq 0) -and ($t.Output -match 'Tests\s+40 passed') -and ($t.Output -notmatch '\d+ failed')
+    Check '40 tests de core-api pasan (transferencias, IA, metricas, diagnostico, privacidad y estados de cuenta)' $ok (($t.Output -split "`n" | Where-Object { $_ -match '^\s*Tests\s' }) -join ' ')
     if (-not $ok) { Write-Host $t.Output }
     $w = Invoke-VitestSuite 'worker'
     $okw = ($w.ExitCode -eq 0) -and ($w.Output -match 'Tests\s+10 passed') -and ($w.Output -notmatch '\d+ failed')
