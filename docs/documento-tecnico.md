@@ -234,6 +234,13 @@ Diseño (qué información identifica cada problema y por qué), en [`observabil
 ## 11. Estados de cuenta (extra)
 `GET /v1/accounts/{n}/statements?month=YYYY-MM&format=csv|pdf`: saldo inicial, créditos, débitos, saldo final y detalle, calculados en PostgreSQL con `NUMERIC` desde el ledger en una transacción de solo lectura; los totales cuadran exactamente con el ledger y el saldo (ADR-0007).
 
+## 11.1 Interfaz web
+`web/` (HTML/CSS/JS sin compilación, nginx en el puerto 8080 con proxy a la API): cuentas y saldo, transferir con confirmación e idempotencia, movimientos, estado de cuenta y consejos de la IA. El acceso es una **demostración** (el backend no autentica) y lo dice en pantalla; lo que no tiene backend (tarjetas, créditos, inversiones) se muestra como "próxima versión".
+Probada con un navegador real (33 comprobaciones, incluida una descripción con HTML que se muestra como texto y ausencia de errores de CSP).
+
+## 11.2 Resiliencia comprobada
+Con **Redis caído** la transferencia da 201, el evento queda en el outbox y al volver Redis se publica y se sincroniza con Bancs. Al **reiniciar PostgreSQL**, core-api y el worker se recuperan solos y las transferencias vuelven a dar 201.
+
 ## 12. Cómo se verificó
 
 | Componente | Pruebas automáticas | Verificación de extremo a extremo |
@@ -243,6 +250,7 @@ Diseño (qué información identifica cada problema y por qué), en [`observabil
 | ai-service | 23 (pytest, con Redis real) | `verificar-paso3.ps1` (27) |
 | ETL | 54 (pytest) | ejecución en Docker y demostración de drift |
 | Observabilidad | – | `verificar-paso4.ps1` (52), incluye un deadlock real y las 53 consultas de los paneles |
+| Interfaz web | 33 comprobaciones con Chrome (`web/test/e2e.js`) | prueba de acceso, transferencia, errores y XSS |
 | Carga e incidente | escenarios k6 con umbrales | `run-loadtest.ps1`, `find-limit.ps1`, `simulate-incident.ps1` (10) |
 
 Todo se levanta con `docker compose up --build -d` (y `--profile obs` para la observabilidad); las instrucciones completas están en el [`README`](../README.md).

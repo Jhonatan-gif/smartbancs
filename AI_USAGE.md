@@ -25,6 +25,7 @@ antes de que se programara y orientó las correcciones. La responsabilidad final
 | `loadtest/`, `scripts/run-loadtest.ps1`, `find-limit.ps1`, `simulate-incident.ps1`, `docker-compose.scale.yml` | Scripts, ejecución de las mediciones y análisis de resultados | No afirmar 10.000 TPS ni cifras no medidas |
 | `core-api/src/modules/statements` (estados de cuenta CSV/PDF) | Código, generador de PDF y pruebas | Contenido y reglas del estado de cuenta |
 | `scripts/verificar-*.ps1` | Scripts de verificación PASS/FAIL y su ejecución | Qué se verifica en cada bloque |
+| `web/` (interfaz móvil, nginx, prueba e2e con navegador real), `docs/defensa.md` y los diagramas PlantUML | Diseño, código, prueba con Chrome/Puppeteer y capturas | Alcance de la interfaz (solo lo que ofrece el backend, sin fingir autenticación) y paleta de marca |
 | Documentación (`docs/`, ADR, runbook, post mortem, documento técnico, README) | Borradores completos | Enfoque, tono y qué se declara como no probado |
 
 ## Cómo se verificó

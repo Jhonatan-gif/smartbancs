@@ -1,8 +1,8 @@
 ﻿
-         /\      Grafana   /‾‾/  
+         /\      Grafana   /ÔÇ¥ÔÇ¥/  
     /\  /  \     |\  __   /  /   
-   /  \/    \    | |/ /  /   ‾‾\ 
-  /          \   |   (  |  (‾)  |
+   /  \/    \    | |/ /  /   ÔÇ¥ÔÇ¥\ 
+  /          \   |   (  |  (ÔÇ¥)  |
  / __________ \  |_|\_\  \_____/ 
 
 
@@ -34,9 +34,9 @@ transfers   [  10% ] 0001/0200 VUs  0m09.0s/1m30s  100.00 iters/s
 
 transfers   [  11% ] 0001/0200 VUs  0m10.0s/1m30s  100.00 iters/s
 
-transfers   [  12% ] 0000/0200 VUs  0m11.0s/1m30s  109.68 iters/s
+transfers   [  12% ] 0001/0200 VUs  0m11.0s/1m30s  109.77 iters/s
 
-transfers   [  13% ] 0000/0200 VUs  0m12.0s/1m30s  119.71 iters/s
+transfers   [  13% ] 0001/0200 VUs  0m12.0s/1m30s  119.79 iters/s
 
 transfers   [  14% ] 0001/0200 VUs  0m13.0s/1m30s  129.73 iters/s
 
@@ -44,111 +44,111 @@ transfers   [  16% ] 0001/0200 VUs  0m14.0s/1m30s  139.75 iters/s
 
 transfers   [  17% ] 0001/0200 VUs  0m15.0s/1m30s  149.77 iters/s
 
-transfers   [  18% ] 0001/0200 VUs  0m16.0s/1m30s  159.72 iters/s
+transfers   [  18% ] 0002/0200 VUs  0m16.0s/1m30s  159.78 iters/s
 
 transfers   [  19% ] 0001/0200 VUs  0m17.0s/1m30s  169.74 iters/s
 
 transfers   [  20% ] 0001/0200 VUs  0m18.0s/1m30s  179.75 iters/s
 
-transfers   [  21% ] 0001/0200 VUs  0m19.0s/1m30s  189.71 iters/s
+transfers   [  21% ] 0002/0200 VUs  0m19.0s/1m30s  189.76 iters/s
 
-transfers   [  22% ] 0001/0200 VUs  0m20.0s/1m30s  199.72 iters/s
+transfers   [  22% ] 0002/0200 VUs  0m20.0s/1m30s  199.77 iters/s
 
 transfers   [  23% ] 0001/0200 VUs  0m21.0s/1m30s  209.74 iters/s
 
-transfers   [  24% ] 0002/0200 VUs  0m22.0s/1m30s  219.75 iters/s
+transfers   [  24% ] 0001/0200 VUs  0m22.0s/1m30s  219.75 iters/s
 
-transfers   [  26% ] 0001/0200 VUs  0m23.0s/1m30s  229.72 iters/s
+transfers   [  26% ] 0002/0200 VUs  0m23.0s/1m30s  229.76 iters/s
 
-transfers   [  27% ] 0002/0200 VUs  0m24.0s/1m30s  239.73 iters/s
+transfers   [  27% ] 0002/0200 VUs  0m24.0s/1m30s  239.77 iters/s
 
-transfers   [  28% ] 0002/0200 VUs  0m25.0s/1m30s  249.74 iters/s
+transfers   [  28% ] 0001/0200 VUs  0m25.0s/1m30s  249.74 iters/s
 
-transfers   [  29% ] 0003/0200 VUs  0m26.0s/1m30s  259.71 iters/s
+transfers   [  29% ] 0003/0200 VUs  0m26.0s/1m30s  259.75 iters/s
 
-transfers   [  30% ] 0001/0200 VUs  0m27.0s/1m30s  269.72 iters/s
+transfers   [  30% ] 0002/0200 VUs  0m27.0s/1m30s  269.76 iters/s
 
-transfers   [  31% ] 0002/0200 VUs  0m28.0s/1m30s  279.73 iters/s
+transfers   [  31% ] 0002/0200 VUs  0m28.0s/1m30s  279.77 iters/s
 
-transfers   [  32% ] 0001/0200 VUs  0m29.0s/1m30s  289.71 iters/s
+transfers   [  32% ] 0002/0200 VUs  0m29.0s/1m30s  289.74 iters/s
 
-transfers   [  33% ] 0001/0200 VUs  0m30.0s/1m30s  299.72 iters/s
+transfers   [  33% ] 0002/0200 VUs  0m30.0s/1m30s  299.75 iters/s
 
-transfers   [  34% ] 0001/0200 VUs  0m31.0s/1m30s  300.00 iters/s
+transfers   [  34% ] 0002/0200 VUs  0m31.0s/1m30s  300.00 iters/s
 
 transfers   [  36% ] 0002/0200 VUs  0m32.0s/1m30s  300.00 iters/s
 
-transfers   [  37% ] 0001/0200 VUs  0m33.0s/1m30s  300.00 iters/s
+transfers   [  37% ] 0002/0200 VUs  0m33.0s/1m30s  300.00 iters/s
 
-transfers   [  38% ] 0001/0200 VUs  0m34.0s/1m30s  300.00 iters/s
+transfers   [  38% ] 0002/0200 VUs  0m34.0s/1m30s  300.00 iters/s
 
-transfers   [  39% ] 0001/0200 VUs  0m35.0s/1m30s  300.00 iters/s
+transfers   [  39% ] 0002/0200 VUs  0m35.0s/1m30s  300.00 iters/s
 
 transfers   [  40% ] 0002/0200 VUs  0m36.0s/1m30s  300.00 iters/s
 
-transfers   [  41% ] 0001/0200 VUs  0m37.0s/1m30s  300.00 iters/s
+transfers   [  41% ] 0002/0200 VUs  0m37.0s/1m30s  300.00 iters/s
 
-transfers   [  42% ] 0001/0200 VUs  0m38.0s/1m30s  300.00 iters/s
+transfers   [  42% ] 0002/0200 VUs  0m38.0s/1m30s  300.00 iters/s
 
-transfers   [  43% ] 0003/0200 VUs  0m39.0s/1m30s  300.00 iters/s
+transfers   [  43% ] 0002/0200 VUs  0m39.0s/1m30s  300.00 iters/s
 
-transfers   [  44% ] 0001/0200 VUs  0m40.0s/1m30s  300.00 iters/s
+transfers   [  44% ] 0003/0200 VUs  0m40.0s/1m30s  300.00 iters/s
 
 transfers   [  46% ] 0002/0200 VUs  0m41.0s/1m30s  300.00 iters/s
 
-transfers   [  47% ] 0001/0200 VUs  0m42.0s/1m30s  300.00 iters/s
+transfers   [  47% ] 0002/0200 VUs  0m42.0s/1m30s  300.00 iters/s
 
-transfers   [  48% ] 0001/0200 VUs  0m43.0s/1m30s  300.00 iters/s
+transfers   [  48% ] 0002/0200 VUs  0m43.0s/1m30s  300.00 iters/s
 
-transfers   [  49% ] 0001/0200 VUs  0m44.0s/1m30s  300.00 iters/s
+transfers   [  49% ] 0002/0200 VUs  0m44.0s/1m30s  300.00 iters/s
 
 transfers   [  50% ] 0002/0200 VUs  0m45.0s/1m30s  300.00 iters/s
 
 transfers   [  51% ] 0002/0200 VUs  0m46.0s/1m30s  300.00 iters/s
 
-transfers   [  52% ] 0001/0200 VUs  0m47.0s/1m30s  300.00 iters/s
+transfers   [  52% ] 0002/0200 VUs  0m47.0s/1m30s  300.00 iters/s
 
 transfers   [  53% ] 0002/0200 VUs  0m48.0s/1m30s  300.00 iters/s
 
 transfers   [  54% ] 0002/0200 VUs  0m49.0s/1m30s  300.00 iters/s
 
-transfers   [  56% ] 0001/0200 VUs  0m50.0s/1m30s  300.00 iters/s
+transfers   [  56% ] 0002/0200 VUs  0m50.0s/1m30s  300.00 iters/s
 
 transfers   [  57% ] 0002/0200 VUs  0m51.0s/1m30s  300.00 iters/s
 
 transfers   [  58% ] 0002/0200 VUs  0m52.0s/1m30s  300.00 iters/s
 
-transfers   [  59% ] 0001/0200 VUs  0m53.0s/1m30s  300.00 iters/s
+transfers   [  59% ] 0002/0200 VUs  0m53.0s/1m30s  300.00 iters/s
 
 transfers   [  60% ] 0002/0200 VUs  0m54.0s/1m30s  300.00 iters/s
 
 transfers   [  61% ] 0002/0200 VUs  0m55.0s/1m30s  300.00 iters/s
 
-transfers   [  62% ] 0002/0200 VUs  0m56.0s/1m30s  300.00 iters/s
+transfers   [  62% ] 0006/0200 VUs  0m56.0s/1m30s  300.00 iters/s
 
-transfers   [  63% ] 0001/0200 VUs  0m57.0s/1m30s  300.00 iters/s
+transfers   [  63% ] 0004/0200 VUs  0m57.0s/1m30s  300.00 iters/s
 
 transfers   [  64% ] 0002/0200 VUs  0m58.0s/1m30s  300.00 iters/s
 
-transfers   [  66% ] 0001/0200 VUs  0m59.0s/1m30s  300.00 iters/s
+transfers   [  66% ] 0002/0200 VUs  0m59.0s/1m30s  300.00 iters/s
 
-transfers   [  67% ] 0001/0200 VUs  1m00.0s/1m30s  300.00 iters/s
+transfers   [  67% ] 0003/0200 VUs  1m00.0s/1m30s  300.00 iters/s
 
-transfers   [  68% ] 0001/0200 VUs  1m01.0s/1m30s  300.00 iters/s
+transfers   [  68% ] 0002/0200 VUs  1m01.0s/1m30s  300.00 iters/s
 
-transfers   [  69% ] 0003/0200 VUs  1m02.0s/1m30s  300.00 iters/s
+transfers   [  69% ] 0007/0200 VUs  1m02.0s/1m30s  300.00 iters/s
 
-transfers   [  70% ] 0001/0200 VUs  1m03.0s/1m30s  300.00 iters/s
+transfers   [  70% ] 0002/0200 VUs  1m03.0s/1m30s  300.00 iters/s
 
-transfers   [  71% ] 0001/0200 VUs  1m04.0s/1m30s  300.00 iters/s
+transfers   [  71% ] 0003/0200 VUs  1m04.0s/1m30s  300.00 iters/s
 
 transfers   [  72% ] 0001/0200 VUs  1m05.0s/1m30s  300.00 iters/s
 
 transfers   [  73% ] 0002/0200 VUs  1m06.0s/1m30s  300.00 iters/s
 
-transfers   [  74% ] 0002/0200 VUs  1m07.0s/1m30s  300.00 iters/s
+transfers   [  74% ] 0001/0200 VUs  1m07.0s/1m30s  300.00 iters/s
 
-transfers   [  76% ] 0001/0200 VUs  1m08.0s/1m30s  300.00 iters/s
+transfers   [  76% ] 0002/0200 VUs  1m08.0s/1m30s  300.00 iters/s
 
 transfers   [  77% ] 0002/0200 VUs  1m09.0s/1m30s  300.00 iters/s
 
@@ -156,82 +156,82 @@ transfers   [  78% ] 0002/0200 VUs  1m10.0s/1m30s  300.00 iters/s
 
 transfers   [  79% ] 0002/0200 VUs  1m11.0s/1m30s  300.00 iters/s
 
-transfers   [  80% ] 0001/0200 VUs  1m12.0s/1m30s  300.00 iters/s
+transfers   [  80% ] 0002/0200 VUs  1m12.0s/1m30s  300.00 iters/s
 
-transfers   [  81% ] 0001/0200 VUs  1m13.0s/1m30s  300.00 iters/s
+transfers   [  81% ] 0002/0200 VUs  1m13.0s/1m30s  300.00 iters/s
 
-transfers   [  82% ] 0002/0200 VUs  1m14.0s/1m30s  300.00 iters/s
+transfers   [  82% ] 0001/0200 VUs  1m14.0s/1m30s  300.00 iters/s
 
-transfers   [  83% ] 0001/0200 VUs  1m15.0s/1m30s  300.00 iters/s
+transfers   [  83% ] 0002/0200 VUs  1m15.0s/1m30s  300.00 iters/s
 
 transfers   [  84% ] 0002/0200 VUs  1m16.0s/1m30s  300.00 iters/s
 
 transfers   [  86% ] 0002/0200 VUs  1m17.0s/1m30s  300.00 iters/s
 
-transfers   [  87% ] 0001/0200 VUs  1m18.0s/1m30s  300.00 iters/s
+transfers   [  87% ] 0002/0200 VUs  1m18.0s/1m30s  300.00 iters/s
 
-transfers   [  88% ] 0002/0200 VUs  1m19.0s/1m30s  300.00 iters/s
+transfers   [  88% ] 0003/0200 VUs  1m19.0s/1m30s  300.00 iters/s
 
-transfers   [  89% ] 0001/0200 VUs  1m20.0s/1m30s  300.00 iters/s
+transfers   [  89% ] 0002/0200 VUs  1m20.0s/1m30s  300.00 iters/s
 
-transfers   [  90% ] 0002/0200 VUs  1m21.0s/1m30s  300.00 iters/s
+transfers   [  90% ] 0003/0200 VUs  1m21.0s/1m30s  300.00 iters/s
 
 transfers   [  91% ] 0002/0200 VUs  1m22.0s/1m30s  300.00 iters/s
 
-transfers   [  92% ] 0001/0200 VUs  1m23.0s/1m30s  300.00 iters/s
+transfers   [  92% ] 0002/0200 VUs  1m23.0s/1m30s  300.00 iters/s
 
-transfers   [  93% ] 0001/0200 VUs  1m24.0s/1m30s  300.00 iters/s
+transfers   [  93% ] 0002/0200 VUs  1m24.0s/1m30s  300.00 iters/s
 
 transfers   [  94% ] 0002/0200 VUs  1m25.0s/1m30s  300.00 iters/s
 
-transfers   [  96% ] 0001/0200 VUs  1m26.0s/1m30s  300.00 iters/s
+transfers   [  96% ] 0003/0200 VUs  1m26.0s/1m30s  300.00 iters/s
 
-transfers   [  97% ] 0001/0200 VUs  1m27.0s/1m30s  300.00 iters/s
+transfers   [  97% ] 0002/0200 VUs  1m27.0s/1m30s  300.00 iters/s
 
-transfers   [  98% ] 0001/0200 VUs  1m28.0s/1m30s  300.00 iters/s
+transfers   [  98% ] 0002/0200 VUs  1m28.0s/1m30s  300.00 iters/s
 
-transfers   [  99% ] 0001/0200 VUs  1m29.0s/1m30s  300.00 iters/s
+transfers   [  99% ] 0002/0200 VUs  1m29.0s/1m30s  300.00 iters/s
 
-transfers   [ 100% ] 0001/0200 VUs  1m30.0s/1m30s  300.00 iters/s
+transfers   [ 100% ] 0002/0200 VUs  1m30.0s/1m30s  300.00 iters/s
 
 
-  █ THRESHOLDS 
+  Ôûê THRESHOLDS 
 
     checks
-    ✓ 'rate>0.99' rate=100.00%
+    Ô£ô 'rate>0.99' rate=100.00%
 
     transfer_errors
-    ✓ 'rate<0.01' rate=0.00%
+    Ô£ô 'rate<0.01' rate=0.00%
 
     transfer_latency
-    ✓ 'p(95)<2000' p(95)=6.83ms
+    Ô£ô 'p(95)<2000' p(95)=11.22ms
 
 
-  █ TOTAL RESULTS 
+  Ôûê TOTAL RESULTS 
 
-    checks_total.......: 24143   268.236811/s
-    checks_succeeded...: 100.00% 24143 out of 24143
-    checks_failed......: 0.00%   0 out of 24143
+    checks_total.......: 24132   268.113262/s
+    checks_succeeded...: 100.00% 24132 out of 24132
+    checks_failed......: 0.00%   0 out of 24132
 
-    ✓ respuesta esperada (201 o 422)
-    ✓ repetición idempotente = 200 y mismo id
+    Ô£ô respuesta esperada (201 o 422)
+    Ô£ô repetici├│n idempotente = 200 y mismo id
 
     CUSTOM
     transfer_errors................: 0.00%  0 out of 22999
-    transfer_latency...............: avg=5.42ms min=3.16ms  med=5.28ms p(90)=6.33ms p(95)=6.83ms p(99)=8.81ms max=50.72ms
-    transfers_created..............: 22999  255.526588/s
-    transfers_replayed.............: 1144   12.710223/s
+    transfer_latency...............: avg=6.87ms min=3.57ms  med=5.91ms p(90)=9.28ms p(95)=11.22ms p(99)=19.45ms max=97.4ms
+    transfers_created..............: 22999  255.525315/s
+    transfers_replayed.............: 1133   12.587947/s
 
     HTTP
-    http_req_duration..............: avg=5.25ms min=504.4µs med=5.24ms p(90)=6.28ms p(95)=6.78ms p(99)=8.7ms  max=50.72ms
-      { expected_response:true }...: avg=5.25ms min=504.4µs med=5.24ms p(90)=6.28ms p(95)=6.78ms p(99)=8.7ms  max=50.72ms
-    http_req_failed................: 0.00%  0 out of 24143
-    http_reqs......................: 24143  268.236811/s
+    http_req_duration..............: avg=6.67ms min=535.8┬Ás med=5.87ms p(90)=9.15ms p(95)=11.13ms p(99)=19.21ms max=97.4ms
+      { expected_response:true }...: avg=6.67ms min=535.8┬Ás med=5.87ms p(90)=9.15ms p(95)=11.13ms p(99)=19.21ms max=97.4ms
+    http_req_failed................: 0.00%  0 out of 24132
+    http_reqs......................: 24132  268.113262/s
 
     EXECUTION
-    iteration_duration.............: avg=5.59ms min=3.16ms  med=5.36ms p(90)=6.76ms p(95)=7.44ms p(99)=9.36ms max=50.72ms
-    iterations.....................: 22999  255.526588/s
-    vus............................: 2      min=0          max=4  
+    iteration_duration.............: avg=7.11ms min=3.57ms  med=6.32ms p(90)=9.7ms  p(95)=11.75ms p(99)=20.18ms max=97.4ms
+    iterations.....................: 22999  255.525315/s
+    vus............................: 2      min=1          max=7  
     vus_max........................: 200    min=200        max=200
 
     NETWORK
@@ -241,4 +241,4 @@ transfers   [ 100% ] 0001/0200 VUs  1m30.0s/1m30s  300.00 iters/s
 
 
 
-transfers ✓ [ 100% ] 0000/0200 VUs  1m30s  300.00 iters/s
+transfers Ô£ô [ 100% ] 0000/0200 VUs  1m30s  300.00 iters/s

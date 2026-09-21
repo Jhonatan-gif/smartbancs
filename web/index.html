@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#008080">
+  <title>SmartBancs</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app" id="app" aria-live="polite">
+    <header class="top">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg viewBox="0 0 32 32" width="26" height="26"><path d="M22 9.5c-1.6-2-9.5-2.4-9.5 2.3 0 4.8 10 2.4 10 8 0 4.4-8 4.6-11.2 1.6" fill="none" stroke="#008080" stroke-width="3.2" stroke-linecap="round"/><circle cx="23.5" cy="7.5" r="2.4" fill="#F2B705"/></svg>
+        </div>
+        <div class="hello">
+          <span id="greeting">Bienvenido,</span>
+          <strong id="userName">SmartBancs</strong>
+        </div>
+      </div>
+      <button class="icon-btn bell" id="bellBtn" type="button" aria-label="Notificaciones" hidden>
+        <span id="bellIcon"></span><span class="badge" id="bellBadge" hidden>0</span>
+      </button>
+    </header>
+
+    <nav class="tabs" id="tabs" role="tablist" aria-label="Secciones">
+      <button role="tab" class="tab active" data-tab="cuentas" aria-selected="true">Cuentas</button>
+      <button role="tab" class="tab" data-tab="tarjetas" aria-selected="false">Tarjetas</button>
+      <button role="tab" class="tab" data-tab="creditos" aria-selected="false">Créditos</button>
+      <button role="tab" class="tab" data-tab="inversiones" aria-selected="false">Inversiones</button>
+    </nav>
+
+    <main id="main" class="main" tabindex="-1"></main>
+
+    <footer class="foot">
+      <span class="dot" id="healthDot"></span><span id="healthText">Comprobando servicio…</span>
+    </footer>
+  </div>
+
+  <!-- Hoja inferior reutilizable (transferir, movimientos, estado de cuenta, consejos) -->
+  <div class="overlay" id="sheetOverlay" hidden>
+    <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+      <div class="sheet-head">
+        <h2 id="sheetTitle"></h2>
+        <button class="icon-btn dark" id="sheetClose" type="button" aria-label="Cerrar"></button>
+      </div>
+      <div class="sheet-body" id="sheetBody"></div>
+    </section>
+  </div>
+
+  <!-- Acceso -->
+  <div class="overlay center" id="loginOverlay" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+      <div class="modal-logo">
+        <div class="logo big" aria-hidden="true">
+          <svg viewBox="0 0 32 32" width="34" height="34"><path d="M22 9.5c-1.6-2-9.5-2.4-9.5 2.3 0 4.8 10 2.4 10 8 0 4.4-8 4.6-11.2 1.6" fill="none" stroke="#008080" stroke-width="3.2" stroke-linecap="round"/><circle cx="23.5" cy="7.5" r="2.4" fill="#F2B705"/></svg>
+        </div>
+        <h1 id="loginTitle"><span class="t1">Smart</span><span class="t2">Bancs</span></h1>
+      </div>
+      <p class="modal-sub">Acceda y experimente lo nuevo de la banca digital</p>
+
+      <form id="loginForm" novalidate autocomplete="off">
+        <label for="user" class="field-label">Usuario</label>
+        <input id="user" name="user" class="input" type="text" placeholder="Ingrese su usuario" list="demoUsers" autocapitalize="none" spellcheck="false" inputmode="text">
+        <datalist id="demoUsers"><option value="ana"><option value="luis"><option value="sofia"><option value="carlos"></datalist>
+        <p class="field-error" id="userError" role="alert" hidden></p>
+
+        <label class="check"><input type="checkbox" id="remember"><span>Recordar usuario en este dispositivo</span></label>
+
+        <button class="btn primary" id="continueBtn" type="submit" disabled>Continuar</button>
+        <button class="btn outline" id="virtualKeyBtn" type="button">Generar clave virtual</button>
+      </form>
+
+      <button class="link" id="inviteBtn" type="button"><span id="infoIcon"></span>¿Tiene una invitación? ingrese aquí</button>
+
+      <div class="demo-note" role="note">
+        <strong>Modo demostración.</strong> Este MVP no implementa autenticación: aquí solo se elige un perfil de prueba
+        (<b>ana</b>, <b>luis</b>, <b>sofia</b> o <b>carlos</b>, cuya cuenta está bloqueada). No se pide ni se valida ninguna clave.
+      </div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script src="app.js"></script>
+</body>
+</html>

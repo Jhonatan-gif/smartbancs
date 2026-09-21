@@ -1,0 +1,48 @@
+@startuml
+title SmartBancs - Componentes
+skinparam componentStyle rectangle
+left to right direction
+
+actor Cliente
+component "web (nginx)\ninterfaz móvil" as WEB
+component "core-api\nNode 22 + Fastify" as API
+database "PostgreSQL 16\nledger + outbox" as PG
+queue "Redis 7\nStreams" as R
+component "worker\nrelay + sincronización" as W
+component "bancs-mock\n(core legado simulado)" as B
+component "ai-service\nFastAPI" as AI
+component "ETL Python" as ETL
+
+package "Observabilidad (perfil obs)" {
+  component "Prometheus" as PROM
+  component "Loki + Alloy" as LOKI
+  component "Tempo" as TEMPO
+  component "Grafana" as G
+}
+
+Cliente --> WEB : HTTPS (demo: HTTP)
+WEB --> API : /api/* (mismo origen)
+API --> PG : 1 transacción por transferencia
+PG --> W : outbox
+W --> R : XADD
+R --> W : grupo bancs-sync
+W --> B : lotes, rate limit,\nbreaker, backoff, DLQ
+R --> AI : grupo ai-recs
+API ..> AI : timeout 300 ms +\nbreaker + fallback
+ETL ..> AI : features por cuenta
+
+API --> PROM : /metrics
+W --> PROM : /metrics
+AI --> PROM : /metrics
+API --> TEMPO : OTLP
+W --> TEMPO : OTLP
+API --> LOKI : logs JSON (trace_id)
+PROM --> G
+LOKI --> G
+TEMPO --> G
+
+note bottom of API
+  La transferencia SOLO depende de PostgreSQL.
+  Bancs, IA y observabilidad no pueden retrasarla.
+end note
+@enduml

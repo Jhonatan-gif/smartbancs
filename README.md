@@ -10,6 +10,7 @@ bloquean el flujo transaccional y observabilidad completa. Reto técnico *NextGe
 
 | Bloque | Qué hace | Cómo verlo |
 |---|---|---|
+| **Interfaz web** (HTML/CSS/JS, nginx) | App móvil: cuentas, saldo, transferir, movimientos, estado de cuenta y consejos de la IA. **http://localhost:8080** | [Interfaz web](#interfaz-web) |
 | **core-api** (Node 22 + Fastify) | Transferencias atómicas e idempotentes, ledger de doble entrada, movimientos, estados de cuenta CSV/PDF | [Probar la API](#probar-la-api) |
 | **PostgreSQL 16** | Esquema, datos de prueba, ledger inmutable, outbox | `db/` |
 | **worker + Redis Streams + Bancs simulado** | Sincroniza con el legado en lotes con límite de tasa, *circuit breaker*, reintentos y DLQ, sin saturarlo | [Sincronización con Bancs](#sincronización-con-bancs) |
@@ -42,8 +43,8 @@ La transferencia **solo depende de PostgreSQL**. Bancs, la IA y la observabilida
 
 ## Iniciar (un solo comando)
 ```bash
-docker compose up --build -d      # PostgreSQL, Redis, Bancs simulado, worker, core-api y ai-service
-docker compose ps                 # los 6 servicios deben quedar "healthy"
+docker compose up --build -d      # PostgreSQL, Redis, Bancs simulado, worker, core-api, ai-service y la interfaz web
+docker compose ps                 # los 7 servicios deben quedar "healthy"
 curl localhost:3000/health        # {"status":"ok"}
 ```
 > Si ya tienes un PostgreSQL en el puerto 5432, crea un archivo `.env` en la raíz con `POSTGRES_PORT=5433` (no se sube al repositorio). Ver `.env.example`.
@@ -51,11 +52,19 @@ curl localhost:3000/health        # {"status":"ok"}
 
 | Servicio | Puerto | |
 |---|---|---|
+| **web** | **8080** | **interfaz móvil** (entra con `ana`, `luis`, `sofia` o `carlos`) |
 | core-api | 3000 | API (y `/metrics`) |
 | ai-service | 8000 | recomendaciones (`/health`, `/model`, `/metrics`) |
 | bancs-mock | 4000 | legado simulado (`/bancs/stats`, `/bancs/admin/outage`) |
 | worker | 9464 | `/metrics` y `/health` |
 | PostgreSQL / Redis | 5432 (o el de `.env`) / 6379 | |
+
+## Interfaz web
+Abre **http://localhost:8080**. Es una app móvil (se ve como un teléfono centrado en pantallas anchas) que usa **solo lo que el backend ofrece**: cuentas y saldo (con ojo para ocultarlo y carrusel de cuentas),
+transferir (con confirmación, errores claros y reintento sin duplicar), movimientos, estado de cuenta en PDF/CSV y consejos de la IA. Las pestañas Tarjetas, Créditos e Inversiones aparecen como "próxima versión" porque no hay backend para ellas.
+> **El acceso es una demostración:** el MVP no tiene autenticación; el modal solo permite elegir un perfil de prueba (`ana`, `luis`, `sofia` o `carlos`, cuya cuenta está bloqueada) y lo dice en pantalla. `?u=ana` entra directo.
+
+Detalle, decisiones y límites: [`web/README.md`](web/README.md). Capturas: [`docs/capturas/`](docs/capturas). Prueba de extremo a extremo con navegador real (33 comprobaciones): `web/test/e2e.js`.
 
 ## Probar la API
 Cuentas de prueba (números con dígito verificador válido):
@@ -189,6 +198,7 @@ docker compose --profile obs down -v                 # borra también los datos 
 
 ## Estructura del repositorio
 ```
+web/                   interfaz web móvil (nginx) y su prueba e2e
 services/core-api      API transaccional (transferencias, cuentas, estados de cuenta, recomendaciones, métricas y trazas)
 services/worker        relay del outbox + sincronización con Bancs (lotes, rate limit, breaker, DLQ)
 services/bancs-mock    core legado simulado (lento, limitado, con fallos)
@@ -205,6 +215,7 @@ docs/                  documento técnico, ADR, runbook, post mortem, evidencias
 ## Documentación
 - **[Documento técnico](docs/documento-tecnico.md):** arquitectura, Bancs, ETL, IA y ciclo de vida del modelo, observabilidad, incidente, seguridad y limitaciones.
 - [Decisiones de arquitectura (ADR 0001-0007)](docs/adr) · [Observabilidad](docs/observabilidad.md) · [Carga y escalado](docs/carga-resultados.md)
+- **[Guion de defensa, guion del video y preguntas probables](docs/defensa.md)** · [Diagramas](docs/diagrams) (Mermaid y PlantUML)
 - [Runbook del incidente](docs/runbook-incidente.md) · [Post mortem: plantilla](docs/postmortem/plantilla.md) y [simulación](docs/postmortem/2026-09-19-simulacion-deadlocks.md)
 - [Evidencias y datos de prueba](docs/evidencias/README.md) · [Declaración de uso de IA](AI_USAGE.md)
 

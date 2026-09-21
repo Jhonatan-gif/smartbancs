@@ -1,0 +1,65 @@
+@startuml
+title SmartBancs - Flujo de una transferencia (síncrono y asíncrono)
+autonumber
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+
+actor Cliente
+participant "core-api" as API
+database "PostgreSQL\n(ledger + outbox)" as PG
+participant "worker\n(relay + sync)" as W
+queue "Redis Streams\ntransfers.completed" as R
+participant "Bancs\n(legado)" as B
+participant "ai-service" as AI
+
+== Camino crítico: solo depende de PostgreSQL (< 2 s) ==
+Cliente -> API : POST /v1/transfers\nIdempotency-Key
+API -> PG : ¿clave ya usada?
+alt Clave repetida con los mismos datos
+  PG --> API : transferencia existente
+  API --> Cliente : 200 (replayed)
+else Clave repetida con datos distintos
+  API --> Cliente : 422 IDEMPOTENCY_KEY_REUSED
+else Clave nueva
+  API -> PG : BEGIN\nlock ambas cuentas ORDER BY id FOR UPDATE
+  alt Cuenta inexistente / inactiva / sin fondos
+    API -> PG : ROLLBACK
+    API --> Cliente : 404 / 422
+  else Todo válido
+    API -> PG : INSERT transactions (UNIQUE idempotency_key)
+    API -> PG : UPDATE débito (WHERE balance >= monto)\nUPDATE crédito
+    API -> PG : INSERT 2 asientos (ledger inmutable)
+    API -> PG : INSERT outbox_events (traceparent)\nCOMMIT
+    API --> Cliente : 201 COMPLETED
+  end
+end
+
+== Camino asíncrono: nunca retrasa al cliente ==
+W -> PG : lee outbox (FOR UPDATE SKIP LOCKED)
+W -> R : XADD evento
+par Grupo bancs-sync
+  R -> W : XREADGROUP
+  loop hasta éxito o 15 min
+    W -> B : POST lote (≤25, máx. 5 llamadas/s)\nreferencia = id de la transacción
+    alt Bancs responde OK
+      B --> W : APPLIED / DUPLICATE
+      W -> PG : bancs_sync = SYNCED
+      W -> R : ACK
+    else 503 / timeout / caída
+      W -> W : backoff + jitter\ncircuit breaker (5 fallos -> 5 s abierto)
+    end
+  end
+  note right of W : Error permanente o >15 min -> DLQ (FAILED)
+else Grupo ai-recs
+  R -> AI : XREADGROUP (actividad reciente)
+end
+
+== Lectura de recomendaciones (aparte de la transferencia) ==
+Cliente -> API : GET /accounts/{n}/recommendations
+API -> AI : timeout 300 ms + circuit breaker
+alt IA responde
+  AI --> API : recomendaciones (source=model)
+else IA lenta, caída o breaker abierto
+  API --> Cliente : fallback (source=fallback) < 500 ms
+end
+@enduml

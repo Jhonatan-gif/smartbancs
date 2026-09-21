@@ -2,3 +2,4 @@
 *.ps1 text eol=lf
 *.png binary
 *.parquet binary
+VIDEO[[:space:]]DEMOSTRATIVO.mp4 filter=lfs diff=lfs merge=lfs -text
